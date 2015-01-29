@@ -66,6 +66,8 @@
     </Compile>
     <Compile Include="Search\BreadthFirstSearch.cs" />
     <Compile Include="Search\DepthFirstSearch.cs" />
+    <Compile Include="Search\IterativeDeepeningDFS.cs" />
+    <Compile Include="Search\SearchManager.cs" />
     <Compile Include="Search\SearchProblem.cs" />
     <Compile Include="Search\SearchResults.cs" />
     <Compile Include="Utils\StringUtils.cs" />
