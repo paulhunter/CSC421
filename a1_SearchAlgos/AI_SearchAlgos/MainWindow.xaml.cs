@@ -203,11 +203,14 @@ namespace AI_SearchAlgos
         {
             if(this._activeProblem != null)
             {
-                SearchResults sr = BreadthFirstSearch.Search(_activeProblem);
-                foreach(MapTile mt in sr.Path)
+                SearchResults sr = BreadthFirstSearch.Search(_activeProblem, 2);
+                if(sr.Solved)
                 {
-                    this.OnScreenTiles.ElementAt(mt.ID).Fill = System.Windows.Media.Brushes.CornflowerBlue;
-                    this.OnScreenTiles.ElementAt(mt.ID).InvalidateVisual();
+                    foreach (MapTile mt in sr.Path)
+                    {
+                        this.OnScreenTiles.ElementAt(mt.ID).Fill = System.Windows.Media.Brushes.CornflowerBlue;
+                        this.OnScreenTiles.ElementAt(mt.ID).InvalidateVisual();
+                    }
                 }
             }
         }
