@@ -53,6 +53,12 @@ namespace AI_SearchAlgos.Search
                     break;
                 }
 
+                if(currentDepth == 0)
+                {
+                    //We have reached the limit we are allowed to search on this branch.
+                    break;
+                }
+
                 foreach(MapTile mt in current.GetNeighbours())
                 {
                     if(Frontier.FirstOrDefault(p => p.Item1 == mt) == null && Explored[mt] == false)

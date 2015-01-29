@@ -34,9 +34,10 @@ namespace AI_SearchAlgos.Model
             //Instantiate every tile.
             int x, y;
             int i = 0;
-            for(x = 0; x < Width; x++)
+
+            for(y = 0; y < Height; y++)
             {
-                for(y = 0; y < Height; y++)
+                for (x = 0; x < Width; x++)
                 {
                     _tiles[x, y] = new MapTile(x, y, i);
                     i++;
@@ -60,10 +61,11 @@ namespace AI_SearchAlgos.Model
         private void AddNeighbours()
         {
             int x, y;
-            for (x = 0; x < Width; x++)
+            for (y = 0; y < Height; y++)
             {
-                for (y = 0; y < Height; y++)
+                for (x = 0; x < Width; x++)
                 {
+
                     AddAllNeighbors(_tiles[x, y]);
                 }
             }
@@ -151,9 +153,10 @@ namespace AI_SearchAlgos.Model
         public IEnumerable<MapTile> XYTiles()
         {
             int x, y;
-            for(x = 0; x < this._width; x++)
+
+            for(y = 0; y < this._height; y++)
             {
-                for(y = 0; y < this._height; y++)
+                for (x = 0; x < this._width; x++)
                 {
                     yield return this._tiles[x,y];
                 }
@@ -194,7 +197,8 @@ namespace AI_SearchAlgos.Model
         private void TrackEdge(MapTile A, MapTile B)
         {
             Tuple<MapTile, MapTile> t;
-            if(A.X <= B.X || A.Y <= B.Y)
+            Debug.Assert(A.ID != B.ID, "CYCLIC EDGES");
+            if(A.ID < B.ID)
             {
                 t = new Tuple<MapTile, MapTile>(A, B);
             }
@@ -202,7 +206,7 @@ namespace AI_SearchAlgos.Model
             {
                 t = new Tuple<MapTile, MapTile>(B, A);
             }
-            if(!this._edges.Contains(t))
+            if(this._edges.FirstOrDefault(p => ( p.Item1 == t.Item1 && p.Item2 == t.Item2)) == null)
             {
                 this._edges.Add(t);
             }

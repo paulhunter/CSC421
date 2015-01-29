@@ -48,7 +48,7 @@ namespace AI_SearchAlgos
         {
             if (_activeProblem == null)
             {
-                _activeProblem = new HexagonalTileSearchProblem(4, 3, 0.2);
+                _activeProblem = new HexagonalTileSearchProblem(4, 3, 0.5);
                 Map m = _activeProblem.SearchSpace;
                 Log.Info(string.Format("App: Map created has {0:0.00} free paths of target {1:0.00}", m.FreePathPercentage * 100, 0.2 * 100));
             }
@@ -81,9 +81,10 @@ namespace AI_SearchAlgos
             {
                 int x, y;
                 Point pc; //Center point of Tile
-                for (x = 0; x < this._activeMap.Width; x++ )
+
+                for(y = 0; y < this._activeMap.Height; y++)
                 {
-                    for(y = 0; y < this._activeMap.Height; y++)
+                    for (x = 0; x < this._activeMap.Width; x++)
                     {
                         // Calculate the center of the polygon with coordinates x,y
                         pc = CenterOfTile(x, y);
@@ -203,7 +204,7 @@ namespace AI_SearchAlgos
         {
             if(this._activeProblem != null)
             {
-                SearchResults sr = BreadthFirstSearch.Search(_activeProblem, 2);
+                SearchResults sr = BreadthFirstSearch.Search(_activeProblem);
                 if(sr.Solved)
                 {
                     foreach (MapTile mt in sr.Path)

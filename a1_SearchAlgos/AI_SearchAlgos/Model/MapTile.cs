@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Diagnostics;
 
 namespace AI_SearchAlgos.Model
 {
@@ -11,7 +12,7 @@ namespace AI_SearchAlgos.Model
         /// <summary>
         /// The Neighbours of the 
         /// </summary>
-        private MapTile[] _Neighbours;
+        private List<MapTile> _Neighbours;
 
         private int _x;
         private int _y;
@@ -22,12 +23,12 @@ namespace AI_SearchAlgos.Model
             this._x = X;
             this._y = Y;
             this._id = ID;
-            _Neighbours = new MapTile[6];
+            _Neighbours = new List<MapTile>();
         }
 
         public void ResetTile()
         {
-            _Neighbours = new MapTile[6];
+            _Neighbours = new List<MapTile>();
         }
 
         public int X
@@ -58,7 +59,7 @@ namespace AI_SearchAlgos.Model
         {
             get
             {
-                return _Neighbours.Count(p => p != null);
+                return _Neighbours.Count;
             }
         }
 
@@ -66,6 +67,7 @@ namespace AI_SearchAlgos.Model
         {
             get
             {
+
                 return this._Neighbours[0];
             }
         }
@@ -112,31 +114,35 @@ namespace AI_SearchAlgos.Model
 
         public IEnumerable<MapTile> GetNeighbours()
         {
-            int x;
-            for(x = 0; x < 6; x++)
+            foreach (MapTile mt in _Neighbours)
             {
-                if(this._Neighbours[x] != null)
-                {
-                    yield return this._Neighbours[x];
-                }
+                yield return mt;
             }
         }
 
         public void AddNeighbour(MapTile Target, int direction)
         {
-            this._Neighbours[direction] = Target;
+            if(!this._Neighbours.Contains(Target))
+            {
+                this._Neighbours.Add(Target);
+            }
+            else
+            {
+                Debug.Assert(false, "Side case hit!");
+            }
+            
         }
 
         public void RemoveNeighbour(MapTile Target)
         {
-           for(int i = 0; i < 6; i++)
-           {
-               if(this._Neighbours[i] == Target)
-               {
-                   this._Neighbours[i] = null;
-                   break;
-               }
-           }
+            if(_Neighbours.Contains(Target))
+            {
+                _Neighbours.Remove(Target);
+            }
+            else
+            {
+                Debug.Assert(false, "Invalid Operations");
+            }
         }
     }
 }
