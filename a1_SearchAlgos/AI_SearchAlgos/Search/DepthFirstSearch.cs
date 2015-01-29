@@ -76,13 +76,7 @@ namespace AI_SearchAlgos.Search
 
             if(r.Solved)
             {
-                r.Path = new List<MapTile>();
-                while (current != Problem.Start)
-                {
-                    r.Path.Insert(0, current);
-                    current = Paths[current];
-                }
-                r.Path.Insert(0, current);
+                r.Path = SearchHelper.GetPathFromStart(current, Paths, Problem.Start);
             }
 
             Log.Info(string.Format("DFS: Search Complete - Solution {0}", r.Solved ? "Found" : "Not Found"));

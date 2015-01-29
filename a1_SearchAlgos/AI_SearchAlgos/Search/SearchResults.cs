@@ -13,7 +13,7 @@ namespace AI_SearchAlgos.Search
     {
         public int TimeInMilliseconds;
         public int TimeComplexity; //Nodes visited
-        public int SpaceComplexity; //Nodes Examined?
+        public int SpaceComplexity; 
         public bool Solved;
         public List<MapTile> Path;
 

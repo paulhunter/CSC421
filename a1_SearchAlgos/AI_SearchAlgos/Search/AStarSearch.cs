@@ -6,11 +6,7 @@ using System.Threading.Tasks;
 
 namespace AI_SearchAlgos.Search
 {
-    /// <summary>
-    /// The Search Manager class is used to conduct experiments with each of the algorithms
-    /// 
-    /// </summary>
-    class SearchManager
+    public class AStarSearch
     {
 
     }

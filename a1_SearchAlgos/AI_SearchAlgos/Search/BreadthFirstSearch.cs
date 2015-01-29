@@ -75,13 +75,7 @@ namespace AI_SearchAlgos.Search
             //If we found a solution, find the path we actually discovered.
             if(r.Solved)
             {
-                r.Path = new List<MapTile>();
-                while (current != Problem.Start)
-                {
-                    r.Path.Insert(0, current);
-                    current = Paths[current];
-                }
-                r.Path.Insert(0, current);
+                r.Path = SearchHelper.GetPathFromStart(current, Paths, Problem.Start);
             }
 
             Log.Info(string.Format("BFS: Search Complete - Solution {0}", r.Solved ? "Found" : "Not Found"));

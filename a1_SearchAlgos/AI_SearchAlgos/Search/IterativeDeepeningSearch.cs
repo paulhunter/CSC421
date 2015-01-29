@@ -6,12 +6,17 @@ using System.Threading.Tasks;
 
 namespace AI_SearchAlgos.Search
 {
-    class IterativeDeepeningDFS
+    /// <summary>
+    /// This class 
+    /// </summary>
+    class IterativeDeepeningSearch
     {
         public static SearchResults Search(HexagonalTileSearchProblem Problem)
         {
+            //The result we will return from the search.
             SearchResults r = new SearchResults();
-            SearchResults lastResult;
+            //The results of the last iteration.
+            SearchResults lastResult = null;
 
             DateTime start_time = DateTime.Now;
             uint currentDepthLimit;
@@ -29,13 +34,17 @@ namespace AI_SearchAlgos.Search
                 if(lastResult.Solved == true)
                 {
                     r.Solved = true;
-                    r.Path = new List<Model.MapTile>(lastResult.Path);
                     break;
                 }
             }
 
             DateTime end_time = DateTime.Now;
             r.TimeInMilliseconds = (int)(end_time - start_time).TotalMilliseconds;
+
+            if(r.Solved)
+            {
+                r.Path = new List<Model.MapTile>(lastResult.Path);
+            }
 
             return r;
         }

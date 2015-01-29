@@ -48,7 +48,7 @@ namespace AI_SearchAlgos
         {
             if (_activeProblem == null)
             {
-                _activeProblem = new HexagonalTileSearchProblem(4, 3, 0.5);
+                _activeProblem = new HexagonalTileSearchProblem(10, 10, 0.5);
                 Map m = _activeProblem.SearchSpace;
                 Log.Info(string.Format("App: Map created has {0:0.00} free paths of target {1:0.00}", m.FreePathPercentage * 100, 0.2 * 100));
             }
