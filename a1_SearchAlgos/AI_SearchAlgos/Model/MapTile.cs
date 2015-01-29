@@ -9,5 +9,50 @@ namespace AI_SearchAlgos.Model
     public class MapTile
     {
         public List<MapTile> Neighbours;
+
+        private int _x;
+        private int _y;
+
+        public MapTile(int X, int Y)
+        {
+            this._x = X;
+            this._y = Y;
+            Neighbours = new List<MapTile>();
+        }
+
+
+        public int X
+        {
+            get
+            {
+                return _x;
+            }
+        }
+
+        public int Y
+        {
+            get
+            {
+                return _y;
+            }
+        }
+
+        public int Connections
+        {
+            get
+            {
+                return Neighbours.Count;
+            }
+        }
+
+        public void AddNeighbour(MapTile Target)
+        {
+            this.Neighbours.Add(Target);
+        }
+
+        public void RemoveNeighbour(MapTile Target)
+        {
+            this.Neighbours.Remove(Target);
+        }
     }
 }

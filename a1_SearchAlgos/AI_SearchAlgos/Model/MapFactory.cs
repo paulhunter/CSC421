@@ -21,11 +21,25 @@ namespace AI_SearchAlgos.Model
         /// <param name="Height">Desired Height</param>
         /// <param name="Width">Desired Width</param>
         /// <param name="PercentFreePaths">A percent of free paths given as 0.0 to 1.0</param>
-        /// <returns></returns>
+        /// <returns>A generated map.</returns>
         public static Map BuildMap(uint Height, uint Width, double PercentFree)
         {
             Debug.Assert(PercentFree >= 0.0 && PercentFree <= 1.0, "PercentFree not in valid range!");
-            return null;
+#if DEBUG
+            DateTime now = DateTime.Now;
+#endif
+            Map result = new Map(Width, Height);
+            uint numEdges = result.EdgeCount;
+            uint targetEdges = (uint)(numEdges * PercentFree);
+            for(int a = 0; a < numEdges-targetEdges; a++)
+            {
+                result.RemoveRandomEdge();
+            }
+#if DEBUG
+            DateTime done = DateTime.Now;
+            Utils.Log.Info(string.Format("MapFactory: Map took {0:0} milliseconds to create.", (done-now).TotalMilliseconds));
+#endif
+            return result;
         }
 
     }

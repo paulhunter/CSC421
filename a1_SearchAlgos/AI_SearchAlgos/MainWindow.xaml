@@ -8,10 +8,10 @@
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
         <StackPanel Grid.Row="0" Orientation="Horizontal">
-            
+            <Button Content="Generate" Click="Button_Click" />
         </StackPanel>
         
         <!-- Canvas -->
-        <Canvas Grid.Row="1" Background="DarkGray" />
+        <Canvas Name="Landscape" Grid.Row="1" Background="DarkGray" />
     </Grid>
 </Window>
