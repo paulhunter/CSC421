@@ -7,6 +7,7 @@ using System.Diagnostics;
 
 namespace AI_SearchAlgos.Model
 {
+    using Utils;
     /// <summary>
     /// A class which can be used to create parameterized instances of the Map class
     /// </summary>
@@ -22,16 +23,19 @@ namespace AI_SearchAlgos.Model
         /// <param name="Width">Desired Width</param>
         /// <param name="PercentFreePaths">A percent of free paths given as 0.0 to 1.0</param>
         /// <returns>A generated map.</returns>
-        public static Map BuildMap(uint Height, uint Width, double PercentFree)
+        public static Map BuildMap(uint Width, uint Height, uint Obstacles)
         {
-            Debug.Assert(PercentFree >= 0.0 && PercentFree <= 1.0, "PercentFree not in valid range!");
 #if DEBUG
             DateTime now = DateTime.Now;
 #endif
             Map result = new Map(Width, Height);
-            uint numEdges = result.EdgeCount;
-            uint targetEdges = (uint)(numEdges * PercentFree);
-            for(int a = 0; a < numEdges-targetEdges; a++)
+            if(Obstacles > result.EdgeCount)
+            {
+                Log.Critical("MapFactory: Obstacle count greater than total edges!");
+                Obstacles = result.EdgeCount;
+            }
+            
+            for(int a = 0; a < Obstacles; a++)
             {
                 result.RemoveRandomEdge();
             }
