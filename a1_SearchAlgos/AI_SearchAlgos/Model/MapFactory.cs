@@ -37,7 +37,7 @@ namespace AI_SearchAlgos.Model
             }
 #if DEBUG
             DateTime done = DateTime.Now;
-            Utils.Log.Info(string.Format("MapFactory: Map took {0:0} milliseconds to create.", (done-now).TotalMilliseconds));
+            Utils.Log.Info(string.Format("MapFactory: Map took {0:0} milliseconds total to create.", (done-now).TotalMilliseconds));
 #endif
             return result;
         }

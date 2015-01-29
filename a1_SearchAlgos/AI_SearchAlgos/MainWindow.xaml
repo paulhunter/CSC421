@@ -12,6 +12,7 @@
         </StackPanel>
         
         <!-- Canvas -->
-        <Canvas Name="Landscape" Grid.Row="1" Background="DarkGray" />
+        <Grid Name="Paths" Grid.Row="1" Background="DarkGray" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" />
+        <Grid Name="Landscape" Grid.Row="1" Panel.ZIndex="2" Background="Transparent" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>
     </Grid>
 </Window>

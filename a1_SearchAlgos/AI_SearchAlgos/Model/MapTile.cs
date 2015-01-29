@@ -12,8 +12,9 @@ namespace AI_SearchAlgos.Model
 
         private int _x;
         private int _y;
+        private int _id;
 
-        public MapTile(int X, int Y)
+        public MapTile(int X, int Y, int ID)
         {
             this._x = X;
             this._y = Y;
@@ -34,6 +35,14 @@ namespace AI_SearchAlgos.Model
             get
             {
                 return _y;
+            }
+        }
+
+        public int ID
+        {
+            get
+            {
+                return _id;
             }
         }
 

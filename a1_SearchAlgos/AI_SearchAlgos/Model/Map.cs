@@ -9,8 +9,8 @@ namespace AI_SearchAlgos.Model
     public class Map
     {
         //Tiles of the map stored by the x,y Coordinates. 
-        private MapTile[,] _tiles;
-        private uint _numberOfEdges;
+        public MapTile[,] _tiles;
+        public List<Tuple<MapTile, MapTile>> _edges;
         private uint _maxNumberOfEdges;
 
         /// <summary>
@@ -21,18 +21,22 @@ namespace AI_SearchAlgos.Model
         /// <param name="Height"></param>
         public Map(uint Width, uint Height)
         {
-            this._numberOfEdges = 0;
+#if DEBUG
+            DateTime now = DateTime.Now;
+#endif
             this._tiles = new MapTile[Width,Height];
             this._width = Width;
             this._height = Height;
-            
+            this._edges = new List<Tuple<MapTile, MapTile>>();
             //Instantiate every tile.
             int x, y;
+            int i = 0;
             for(x = 0; x < Width; x++)
             {
                 for(y = 0; y < Height; y++)
                 {
-                    _tiles[x, y] = new MapTile(x, y);
+                    _tiles[x, y] = new MapTile(x, y, i);
+                    i++;
                 }
             }
 
@@ -45,8 +49,11 @@ namespace AI_SearchAlgos.Model
                 }
             }
             //Snag the max number of edges for statistics later.
-            this._maxNumberOfEdges = _numberOfEdges;
-
+            this._maxNumberOfEdges = (uint)_edges.Count;
+#if DEBUG
+            DateTime done = DateTime.Now;
+            Utils.Log.Info(string.Format("Map: Constructor took {0:0} milliseconds to create all connected map.", (done - now).TotalMilliseconds));
+#endif
         }
 
         private uint _height = 0;
@@ -88,7 +95,7 @@ namespace AI_SearchAlgos.Model
         {
             get
             {
-                return _numberOfEdges;
+                return (uint)_edges.Count;
             }
         }
 
@@ -96,7 +103,7 @@ namespace AI_SearchAlgos.Model
         {
             get
             {
-                return (_numberOfEdges) / (double)(_maxNumberOfEdges);
+                return (EdgeCount) / (double)(_maxNumberOfEdges);
             }
         }
 
@@ -116,15 +123,32 @@ namespace AI_SearchAlgos.Model
             foreach(int[] offsetPair in _neighbourSet)
             {
                 xo = Target.X + offsetPair[0];
-                yo = Target.X + offsetPair[1];
+                yo = Target.Y + offsetPair[1];
                 try
                 {
                     MapTile n = _tiles[xo, yo];
                     Target.AddNeighbour(n);
-                    _numberOfEdges += 1;
+                    TrackEdge(Target, n);
                 }
                 //this will occur when we are dealing with an edge tile, its a nominal exception.
                 catch (IndexOutOfRangeException) { }
+            }
+        }
+
+        private void TrackEdge(MapTile A, MapTile B)
+        {
+            Tuple<MapTile, MapTile> t;
+            if(A.X <= B.X || A.Y <= B.Y)
+            {
+                t = new Tuple<MapTile, MapTile>(A, B);
+            }
+            else
+            {
+                t = new Tuple<MapTile, MapTile>(B, A);
+            }
+            if(!this._edges.Contains(t))
+            {
+                this._edges.Add(t);
             }
         }
 
@@ -136,29 +160,19 @@ namespace AI_SearchAlgos.Model
             DateTime now = DateTime.Now;
 #endif
             Random r = new Random();
-            int x, y, i;
-            MapTile a, b;
-            //attempt to remove a random edge until we are able to.
-            while(true)
-            {
-                x = r.Next(0, (int)this._width);
-                y = r.Next(0, (int)this._height);
-                a = _tiles[x, y];
-                if(a.Connections > 0)
-                {
-                    i = r.Next(0, a.Connections);
-                    b = a.Neighbours.ElementAt(i);
-                    a.RemoveNeighbour(b);
-                    b.RemoveNeighbour(a);
-                    _numberOfEdges -= 1;
-                    break;
-                }
-            }
+            int i = r.Next(0, _edges.Count);
+            Tuple<MapTile, MapTile> mtp = _edges.ElementAt(i);
+            mtp.Item1.Neighbours.Remove(mtp.Item2);
+            mtp.Item2.Neighbours.Remove(mtp.Item1);
+            _edges.RemoveAt(i);
+            
 #if DEBUG
             DateTime done = DateTime.Now;
             Utils.Log.Info(string.Format("Map: Took {0:0.000} milliseconds to remove random edge.", (done - now).TotalMilliseconds));
 #endif
         }
+
+
 
         public void RemoveNeighbour(MapTile A, MapTile B)
         {
