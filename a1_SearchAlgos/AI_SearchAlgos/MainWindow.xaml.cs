@@ -45,7 +45,7 @@ namespace AI_SearchAlgos
 
         private void Button_Click(object sender, RoutedEventArgs e)
         {
-            Map m = MapFactory.BuildMap(3, 3, 1.0);
+            Map m = MapFactory.BuildMap(5, 5, 0.2);
             Log.Info(string.Format("App: Map created has {0:0.00} free paths of target {1:0.00}", m.FreePathPercentage * 100, 0.2*100));
             ClearMap();
             this._activeMap = m;
@@ -118,14 +118,15 @@ namespace AI_SearchAlgos
                 pc.Add(new System.Windows.Point(xo, yo));
             }
 
-            Polygon r = new Polygon();
-            r.Points = pc;
-            r.InvalidateVisual();
-            r.HorizontalAlignment = System.Windows.HorizontalAlignment.Left;
-            r.VerticalAlignment = System.Windows.VerticalAlignment.Top;
-            r.Fill = System.Windows.Media.Brushes.ForestGreen;
-            r.Stroke = System.Windows.Media.Brushes.Black;
-            r.StrokeThickness = 2;
+            Polygon r = new Polygon()
+            {
+                Points = pc,
+                HorizontalAlignment = System.Windows.HorizontalAlignment.Left,
+                VerticalAlignment = System.Windows.VerticalAlignment.Top,
+                Fill = System.Windows.Media.Brushes.ForestGreen,
+                Stroke = System.Windows.Media.Brushes.Black,
+                StrokeThickness = 2
+            };
             this.OnScreenTiles.Add(r);
             return r;
         }

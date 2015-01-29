@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Diagnostics;
 
 namespace AI_SearchAlgos.Model
 {
@@ -107,7 +108,33 @@ namespace AI_SearchAlgos.Model
             }
         }
 
+        /// <summary>
+        /// Retrieve a tile at the provided coordinates.
+        /// </summary>
+        public MapTile GetTile(uint X, uint Y)
+        {
+            Debug.Assert(X < this._width && Y < this._height, "Map.GetTile: Invalid Coordinates!");
+            return this._tiles[X, Y];
+        }
+
+        /// <summary>
+        /// Enumerate the Tiles of the Map by row. 
+        /// </summary>
+        /// <returns></returns>
+        public IEnumerable<MapTile> XYTiles()
+        {
+            int x, y;
+            for(x = 0; x < this._width; x++)
+            {
+                for(y = 0; y < this._height; y++)
+                {
+                    yield return this._tiles[x,y];
+                }
+            }
+        }
+
         private int[][] _neighbourSet;
+        //Neighbour coordinate offsets are listed in the order, Right, TopRight, TopLeft, Left, BottomLeft, BottomRight
         private int[][][] _neighbourCoordinates = new int [][][] {
             new int[][] { new int [] {+1, 0}, new int[] {0, -1}, new int[] {-1, -1}, 
                           new int [] {-1, 0}, new int [] {-1, +1}, new int [] {0 ,+1} }, //For those with an EVEN Y
@@ -120,6 +147,7 @@ namespace AI_SearchAlgos.Model
             int xo, yo;
             //We find our neighbours based on the row (Y) being even or odd. 
             _neighbourSet = _neighbourCoordinates[Target.Y % 2];
+            int d = 0; //Indicator of direction.
             foreach(int[] offsetPair in _neighbourSet)
             {
                 xo = Target.X + offsetPair[0];
@@ -127,11 +155,12 @@ namespace AI_SearchAlgos.Model
                 try
                 {
                     MapTile n = _tiles[xo, yo];
-                    Target.AddNeighbour(n);
+                    Target.AddNeighbour(n, d);
                     TrackEdge(Target, n);
                 }
                 //this will occur when we are dealing with an edge tile, its a nominal exception.
                 catch (IndexOutOfRangeException) { }
+                d++;
             }
         }
 
@@ -162,8 +191,8 @@ namespace AI_SearchAlgos.Model
             Random r = new Random();
             int i = r.Next(0, _edges.Count);
             Tuple<MapTile, MapTile> mtp = _edges.ElementAt(i);
-            mtp.Item1.Neighbours.Remove(mtp.Item2);
-            mtp.Item2.Neighbours.Remove(mtp.Item1);
+            mtp.Item1.RemoveNeighbour(mtp.Item2);
+            mtp.Item2.RemoveNeighbour(mtp.Item1);
             _edges.RemoveAt(i);
             
 #if DEBUG

@@ -8,7 +8,10 @@ namespace AI_SearchAlgos.Model
 {
     public class MapTile
     {
-        public List<MapTile> Neighbours;
+        /// <summary>
+        /// The Neighbours of the 
+        /// </summary>
+        public MapTile[] Neighbours;
 
         private int _x;
         private int _y;
@@ -18,7 +21,8 @@ namespace AI_SearchAlgos.Model
         {
             this._x = X;
             this._y = Y;
-            Neighbours = new List<MapTile>();
+            this._id = ID;
+            Neighbours = new MapTile[6];
         }
 
 
@@ -50,18 +54,73 @@ namespace AI_SearchAlgos.Model
         {
             get
             {
-                return Neighbours.Count;
+                return Neighbours.Count(p => p != null);
             }
         }
 
-        public void AddNeighbour(MapTile Target)
+        public MapTile Right
         {
-            this.Neighbours.Add(Target);
+            get
+            {
+                return this.Neighbours[0];
+            }
+        }
+
+        public MapTile TopRight
+        {
+            get
+            {
+                return this.Neighbours[1];
+            }
+        }
+
+        public MapTile TopLeft
+        {
+            get
+            {
+                return this.Neighbours[2];
+            }
+        }
+
+        public MapTile Left
+        {
+            get
+            {
+                return this.Neighbours[3];
+            }
+        }
+
+        public MapTile BottomLeft
+        {
+            get
+            {
+                return this.Neighbours[4];
+            }
+        }
+
+        public MapTile BottomRight
+        {
+            get
+            {
+                return this.Neighbours[5];
+            }
+        }
+
+        public void AddNeighbour(MapTile Target, int direction)
+        {
+            this.Neighbours[direction] = Target;
         }
 
         public void RemoveNeighbour(MapTile Target)
         {
-            this.Neighbours.Remove(Target);
+           for(int i = 0; i < 6; i++)
+           {
+               if(this.Neighbours[i] == Target)
+               {
+                   this.Neighbours[i] = null;
+                   break;
+               }
+           }
         }
     }
 }
