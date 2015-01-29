@@ -42,6 +42,20 @@ namespace AI_SearchAlgos.Model
             }
 
             //Connect each tile with its available neighbours
+            AddNeighbours();
+            //Snag the max number of edges for statistics later.
+            this._maxNumberOfEdges = (uint)_edges.Count;
+#if DEBUG
+            DateTime done = DateTime.Now;
+            Utils.Log.Info(string.Format("Map: Constructor took {0:0} milliseconds to create all connected map.", (done - now).TotalMilliseconds));
+#endif
+        }
+        /// <summary>
+        /// Add each of the neighbours of all the tiles in the map.
+        /// </summary>
+        private void AddNeighbours()
+        {
+            int x, y;
             for (x = 0; x < Width; x++)
             {
                 for (y = 0; y < Height; y++)
@@ -49,12 +63,17 @@ namespace AI_SearchAlgos.Model
                     AddAllNeighbors(_tiles[x, y]);
                 }
             }
-            //Snag the max number of edges for statistics later.
-            this._maxNumberOfEdges = (uint)_edges.Count;
-#if DEBUG
-            DateTime done = DateTime.Now;
-            Utils.Log.Info(string.Format("Map: Constructor took {0:0} milliseconds to create all connected map.", (done - now).TotalMilliseconds));
-#endif
+        }
+
+        public void Reset()
+        {
+            foreach(MapTile mt in _tiles)
+            {
+                mt.ResetTile();
+            }
+            _edges = new List<Tuple<MapTile, MapTile>>();
+            AddNeighbours();
+
         }
 
         private uint _height = 0;

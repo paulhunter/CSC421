@@ -11,7 +11,7 @@ namespace AI_SearchAlgos.Model
         /// <summary>
         /// The Neighbours of the 
         /// </summary>
-        public MapTile[] Neighbours;
+        private MapTile[] _Neighbours;
 
         private int _x;
         private int _y;
@@ -22,9 +22,13 @@ namespace AI_SearchAlgos.Model
             this._x = X;
             this._y = Y;
             this._id = ID;
-            Neighbours = new MapTile[6];
+            _Neighbours = new MapTile[6];
         }
 
+        public void ResetTile()
+        {
+            _Neighbours = new MapTile[6];
+        }
 
         public int X
         {
@@ -54,7 +58,7 @@ namespace AI_SearchAlgos.Model
         {
             get
             {
-                return Neighbours.Count(p => p != null);
+                return _Neighbours.Count(p => p != null);
             }
         }
 
@@ -62,7 +66,7 @@ namespace AI_SearchAlgos.Model
         {
             get
             {
-                return this.Neighbours[0];
+                return this._Neighbours[0];
             }
         }
 
@@ -70,7 +74,7 @@ namespace AI_SearchAlgos.Model
         {
             get
             {
-                return this.Neighbours[1];
+                return this._Neighbours[1];
             }
         }
 
@@ -78,7 +82,7 @@ namespace AI_SearchAlgos.Model
         {
             get
             {
-                return this.Neighbours[2];
+                return this._Neighbours[2];
             }
         }
 
@@ -86,7 +90,7 @@ namespace AI_SearchAlgos.Model
         {
             get
             {
-                return this.Neighbours[3];
+                return this._Neighbours[3];
             }
         }
 
@@ -94,7 +98,7 @@ namespace AI_SearchAlgos.Model
         {
             get
             {
-                return this.Neighbours[4];
+                return this._Neighbours[4];
             }
         }
 
@@ -102,22 +106,34 @@ namespace AI_SearchAlgos.Model
         {
             get
             {
-                return this.Neighbours[5];
+                return this._Neighbours[5];
+            }
+        }
+
+        public IEnumerable<MapTile> GetNeighbours()
+        {
+            int x;
+            for(x = 0; x < 6; x++)
+            {
+                if(this._Neighbours[x] != null)
+                {
+                    yield return this._Neighbours[x];
+                }
             }
         }
 
         public void AddNeighbour(MapTile Target, int direction)
         {
-            this.Neighbours[direction] = Target;
+            this._Neighbours[direction] = Target;
         }
 
         public void RemoveNeighbour(MapTile Target)
         {
            for(int i = 0; i < 6; i++)
            {
-               if(this.Neighbours[i] == Target)
+               if(this._Neighbours[i] == Target)
                {
-                   this.Neighbours[i] = null;
+                   this._Neighbours[i] = null;
                    break;
                }
            }

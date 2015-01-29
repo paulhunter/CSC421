@@ -17,6 +17,7 @@ namespace AI_SearchAlgos
 {
     using Model;
     using Utils;
+    using Search;
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
@@ -27,8 +28,8 @@ namespace AI_SearchAlgos
         private const double POLYGON_WIDTH = 1.732051 * (POLYGON_SIZE + POLYGON_SPACE); //SQRT(3) * (PolygonSize + 5);
         private const double POLYGON_HEIGHT = (POLYGON_SIZE + POLYGON_SPACE) * 2;
         private const double POLYGON_V_DISTANCE = 0.75 * POLYGON_HEIGHT;
-        
 
+        private HexagonalTileSearchProblem _activeProblem;
         private Map _activeMap;
 
         private List<Polygon> OnScreenTiles;
@@ -45,10 +46,18 @@ namespace AI_SearchAlgos
 
         private void Button_Click(object sender, RoutedEventArgs e)
         {
-            Map m = MapFactory.BuildMap(5, 5, 0.2);
-            Log.Info(string.Format("App: Map created has {0:0.00} free paths of target {1:0.00}", m.FreePathPercentage * 100, 0.2*100));
+            if (_activeProblem == null)
+            {
+                _activeProblem = new HexagonalTileSearchProblem(4, 3, 0.2);
+                Map m = _activeProblem.SearchSpace;
+                Log.Info(string.Format("App: Map created has {0:0.00} free paths of target {1:0.00}", m.FreePathPercentage * 100, 0.2 * 100));
+            }
+            else
+            {
+                _activeProblem.Reset();
+            }
             ClearMap();
-            this._activeMap = m;
+            this._activeMap = _activeProblem.SearchSpace;
             UpdateMap();
         }
 
@@ -93,6 +102,11 @@ namespace AI_SearchAlgos
                 {
                     this.Paths.Children.Add(l);
                 }
+
+                //Highlight Start and End as Light Green and Red
+                this.OnScreenTiles.ElementAt(this._activeProblem.Start.ID).Fill = System.Windows.Media.Brushes.LightGreen;
+                this.OnScreenTiles.ElementAt(this._activeProblem.Goal.ID).Fill = System.Windows.Media.Brushes.LightCoral;
+
                 this.Landscape.InvalidateVisual();
                 this.Paths.InvalidateVisual();
             }
@@ -178,6 +192,24 @@ namespace AI_SearchAlgos
             yc = (0.5 * POLYGON_HEIGHT) + (y * POLYGON_V_DISTANCE);
             p = new Point(xc, yc);
             return p;
+        }
+
+        private void Button_Click_1(object sender, RoutedEventArgs e)
+        {
+            ApplyBreadthFirstSearch();
+        }
+
+        private void ApplyBreadthFirstSearch()
+        {
+            if(this._activeProblem != null)
+            {
+                SearchResults sr = BreadthFirstSearch.Search(_activeProblem);
+                foreach(MapTile mt in sr.Path)
+                {
+                    this.OnScreenTiles.ElementAt(mt.ID).Fill = System.Windows.Media.Brushes.CornflowerBlue;
+                    this.OnScreenTiles.ElementAt(mt.ID).InvalidateVisual();
+                }
+            }
         }
     }
 }
