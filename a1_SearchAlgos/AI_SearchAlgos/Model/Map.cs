@@ -146,7 +146,7 @@ namespace AI_SearchAlgos.Model
                 a = _tiles[x, y];
                 if(a.Connections > 0)
                 {
-                    i = r.Next(0, a.Connections - 1);
+                    i = r.Next(0, a.Connections);
                     b = a.Neighbours.ElementAt(i);
                     a.RemoveNeighbour(b);
                     b.RemoveNeighbour(a);
