@@ -9,16 +9,23 @@ namespace AI_SearchAlgos.Search
     using Model;
     using Utils;
 
-    public class DepthFirstSearch
+    public class DepthFirstSearch : ISearchAlgorithm
     {
-        public static SearchResults Search(HexagonalTileSearchProblem Problem)
+        public override string ToString()
+        {
+            return "Depth First Search";
+        }
+        public SearchResults Search(HexagonalTileSearchProblem Problem)
         {
             return Search(Problem, uint.MaxValue);
         }
 
-        public static SearchResults Search(HexagonalTileSearchProblem Problem, uint DepthLimit)
+        public SearchResults Search(HexagonalTileSearchProblem Problem, uint DepthLimit)
         {
             SearchResults r = new SearchResults();
+            if (Problem == null)
+                return r;
+
 
             Stack<Tuple<MapTile, uint>> Frontier = new Stack<Tuple<MapTile, uint>>();
             Frontier.Push(new Tuple<MapTile, uint>(Problem.Start, DepthLimit));

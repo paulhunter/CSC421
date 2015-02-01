@@ -9,20 +9,28 @@ namespace AI_SearchAlgos.Search
     /// <summary>
     /// This class 
     /// </summary>
-    class IterativeDeepeningSearch
+    class IterativeDeepeningSearch : ISearchAlgorithm
     {
-        public static SearchResults Search(HexagonalTileSearchProblem Problem)
+        public override string ToString()
+        {
+            return "Iterative Deepening Search";
+        }
+        public SearchResults Search(HexagonalTileSearchProblem Problem)
         {
             //The result we will return from the search.
             SearchResults r = new SearchResults();
+            if (Problem == null)
+                return r;
+
             //The results of the last iteration.
             SearchResults lastResult = null;
+            BreadthFirstSearch BFS = new BreadthFirstSearch();
 
             DateTime start_time = DateTime.Now;
             uint currentDepthLimit;
             for(currentDepthLimit = 0; currentDepthLimit < Problem.SearchSpace.Size; currentDepthLimit++)
             {
-                lastResult = BreadthFirstSearch.Search(Problem, currentDepthLimit);
+                lastResult = BFS.Search(Problem, currentDepthLimit);
 
                 r.TimeComplexity += lastResult.TimeComplexity;
                 if(lastResult.SpaceComplexity > r.SpaceComplexity)

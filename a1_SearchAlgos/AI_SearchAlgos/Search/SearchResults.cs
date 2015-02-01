@@ -17,6 +17,8 @@ namespace AI_SearchAlgos.Search
         public bool Solved;
         public List<MapTile> Path;
 
+        public SearchExecution Execution;
+
         public SearchResults()
         {
             TimeInMilliseconds = 0;

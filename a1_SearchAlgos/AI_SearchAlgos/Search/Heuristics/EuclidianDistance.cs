@@ -17,5 +17,10 @@ namespace AI_SearchAlgos.Search.Heuristics
                     Math.Pow((A.X - B.X), 2) + 
                     Math.Pow((A.Y - B.Y), 2));
         }
+
+        public override string ToString()
+        {
+            return "Euclidian Distance";
+        }
     }
 }

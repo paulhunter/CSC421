@@ -8,23 +8,35 @@ namespace AI_SearchAlgos.Search
 {
     using Model;
     using Utils;
-    public class BreadthFirstSearch
+    public class BreadthFirstSearch : ISearchAlgorithm
     {
-        public static SearchResults Search(HexagonalTileSearchProblem Problem)
+        Queue<Tuple<MapTile, uint>> Frontier;
+        Dictionary<MapTile, MapTile> Paths;
+        Dictionary<MapTile, bool> Explored;
+        SearchExecution se;
+        SearchExecution.TileState[] states;
+
+        public override string ToString()
+        {
+            return "Breadth First Search";
+        }
+        public SearchResults Search(HexagonalTileSearchProblem Problem)
         {
             return Search(Problem, uint.MaxValue);
         }
-        public static SearchResults Search(HexagonalTileSearchProblem Problem, uint DepthLimit)
+        public SearchResults Search(HexagonalTileSearchProblem Problem, uint DepthLimit)
         {
             SearchResults r = new SearchResults();
+            if (Problem == null)
+                return r;
 
-            Queue<Tuple<MapTile, uint>> Frontier = new Queue<Tuple<MapTile, uint>>();
+            Frontier = new Queue<Tuple<MapTile, uint>>();
             Frontier.Enqueue(new Tuple<MapTile, uint>(Problem.Start, DepthLimit));
 
             //Storage of the Search Tiles mapped to the Tile that Led to Their Discovery.
-            Dictionary<MapTile, MapTile> Paths = new Dictionary<MapTile, MapTile>();
+            Paths = new Dictionary<MapTile, MapTile>();
 
-            Dictionary<MapTile, bool> Explored = new Dictionary<MapTile, bool>((int)Problem.SearchSpace.Size);
+            Explored = new Dictionary<MapTile, bool>((int)Problem.SearchSpace.Size);
             foreach(MapTile mt in Problem.SearchSpace.XYTiles())
             {
                 Explored.Add(mt, false);

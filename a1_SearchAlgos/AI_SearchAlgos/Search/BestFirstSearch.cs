@@ -8,11 +8,25 @@ namespace AI_SearchAlgos.Search
 {
     using Heuristics;
     using Model;
-    public class BestFirstSearch
+    public class BestFirstSearch : ISearchAlgorithm
     {
-        public static SearchResults Search(HexagonalTileSearchProblem Problem, IHeuristic Heuristic)
+        IHeuristic Heuristic;
+
+        public BestFirstSearch(IHeuristic Heuristic)
+        {
+            this.Heuristic = Heuristic;
+        }
+
+        public override string ToString()
+        {
+            return "Best First Search - " + Heuristic.ToString();
+        }
+        public SearchResults Search(HexagonalTileSearchProblem Problem)
         {
             SearchResults r = new SearchResults();
+            if (Problem == null)
+                return r;
+
             Dictionary<MapTile, MapTile> Paths = new Dictionary<MapTile, MapTile>();
 
             Dictionary<MapTile, bool> Explored = new Dictionary<MapTile, bool>((int)Problem.SearchSpace.Size);
@@ -21,7 +35,7 @@ namespace AI_SearchAlgos.Search
                 Explored.Add(mt, false);
             }
 
-            SortedList<double, MapTile> Available = new SortedList<double, MapTile>();
+            SortedList<double, MapTile> Available = new SortedList<double, MapTile>(new DuplicateKeyComparer<double>());
             Available.Add(0, Problem.Start);
 
             MapTile current = null;
@@ -52,7 +66,14 @@ namespace AI_SearchAlgos.Search
                 {
                     if(Explored[mt] == false)
                     {
-                        Paths.Add(mt, current);
+                        if (Paths.ContainsKey(mt))
+                        {
+                            Paths[mt] = current;
+                        }
+                        else
+                        {
+                            Paths.Add(mt, current);
+                        }
                         Available.Add(
                             SearchHelper.GetPathLengthFromStart(mt, Paths, Problem.Start)
                             + Heuristic.Calculate(mt, Problem.Goal),

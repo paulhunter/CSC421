@@ -18,6 +18,7 @@ namespace AI_SearchAlgos
     using Model;
     using Utils;
     using Search;
+    using Search.Heuristics;
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
@@ -29,6 +30,12 @@ namespace AI_SearchAlgos
         private const double POLYGON_HEIGHT = (POLYGON_SIZE + POLYGON_SPACE) * 2;
         private const double POLYGON_V_DISTANCE = 0.75 * POLYGON_HEIGHT;
 
+        private MainWindow _thisInstance;
+
+        private uint map_Height = 5;
+        private uint map_Width = 5;
+        private uint map_PercentFree = 50;
+
         private HexagonalTileSearchProblem _activeProblem;
         private Map _activeMap;
 
@@ -39,16 +46,34 @@ namespace AI_SearchAlgos
         {
             Utils.Log.Start();
             InitializeComponent();
-
-            OnScreenTiles = new List<Polygon>();
-            OnScreenPaths = new List<Line>();
+            this._thisInstance = this;
+            Init();
         }
 
-        private void Button_Click(object sender, RoutedEventArgs e)
+        private void Init()
+        {
+            OnScreenTiles = new List<Polygon>();
+            OnScreenPaths = new List<Line>();
+
+            Algorithms.Items.Add(new BreadthFirstSearch());
+            Algorithms.Items.Add(new DepthFirstSearch());
+            Algorithms.Items.Add(new IterativeDeepeningSearch());
+            Algorithms.Items.Add(new BestFirstSearch(new EuclidianDistance()));
+            Algorithms.Items.Add(new BestFirstSearch(new TileDistanceHeuristic()));
+            
+            Algorithms.SelectedIndex = 0;
+
+
+            RefeshUIComponents();
+
+        }
+
+
+        private void Generate_Click(object sender, RoutedEventArgs e)
         {
             if (_activeProblem == null)
             {
-                _activeProblem = new HexagonalTileSearchProblem(10, 10, 0.5);
+                _activeProblem = new HexagonalTileSearchProblem(map_Width, map_Height, map_PercentFree/(100.0));
                 Map m = _activeProblem.SearchSpace;
                 Log.Info(string.Format("App: Map created has {0:0.00} free paths of target {1:0.00}", m.FreePathPercentage * 100, 0.2 * 100));
             }
@@ -73,6 +98,16 @@ namespace AI_SearchAlgos
                 OnScreenPaths.Clear();
             }
             
+        }
+
+        private void RefeshUIComponents()
+        {
+            this._thisInstance.Dispatcher.BeginInvoke(new Action(() =>
+                {
+                    this.MapWidth_tb.Text = string.Format("{0:0}", this.map_Width);
+                    this.MapHeight_tb.Text = string.Format("{0:0}", this.map_Height);
+                    this.MapPercentFree_tb.Text = string.Format("{0:0}", this.map_PercentFree);
+                }));
         }
 
         private void UpdateMap()
@@ -195,15 +230,11 @@ namespace AI_SearchAlgos
             return p;
         }
 
-        private void Button_Click_1(object sender, RoutedEventArgs e)
-        {
-            ApplyBreadthFirstSearch();
-        }
-
         private void ApplyBreadthFirstSearch()
         {
             if(this._activeProblem != null)
             {
+                /*
                 SearchResults sr = BreadthFirstSearch.Search(_activeProblem);
                 if(sr.Solved)
                 {
@@ -213,7 +244,29 @@ namespace AI_SearchAlgos
                         this.OnScreenTiles.ElementAt(mt.ID).InvalidateVisual();
                     }
                 }
+                 */
             }
+        }
+
+        private void StartSearch_Click(object sender, RoutedEventArgs e)
+        {
+            ISearchAlgorithm sa = (ISearchAlgorithm)this.Algorithms.SelectedItem;
+            SearchResults sr = sa.Search(_activeProblem);
+            if(sr.Solved)
+            {
+                foreach (MapTile mt in sr.Path)
+                {
+                    this.OnScreenTiles.ElementAt(mt.ID).Fill = System.Windows.Media.Brushes.CornflowerBlue;
+                    this.OnScreenTiles.ElementAt(mt.ID).InvalidateVisual();
+                }
+            }
+        }
+
+        
+
+        private void textbox_LostFocus(object sender, RoutedEventArgs e)
+        {
+
         }
     }
 }
