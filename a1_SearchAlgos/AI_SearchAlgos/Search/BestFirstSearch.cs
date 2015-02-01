@@ -35,10 +35,11 @@ namespace AI_SearchAlgos.Search
                 Explored.Add(mt, false);
             }
 
-            SortedList<double, MapTile> Available = new SortedList<double, MapTile>(new DuplicateKeyComparer<double>());
+            hSortedList<double, MapTile> Available = new hSortedList<double, MapTile>();
             Available.Add(0, Problem.Start);
 
             MapTile current = null;
+            int neighbour_cost;
             DateTime start_time = DateTime.Now;
             while(Available.Count != 0)
             {
@@ -47,8 +48,9 @@ namespace AI_SearchAlgos.Search
                     r.SpaceComplexity = Available.Count;
                 }
 
-                current = Available.Values[0];
-                Available.RemoveAt(0);
+                current = Available.Pop();
+                neighbour_cost = SearchHelper.GetPathLengthFromStart(current, Paths, Problem.Start) + 1;
+                
                 r.TimeComplexity++; 
 
                 Explored[current] = true;
@@ -64,21 +66,30 @@ namespace AI_SearchAlgos.Search
                 //from this mapTile.
                 foreach(MapTile mt in current.GetNeighbours())
                 {
-                    if(Explored[mt] == false)
+                    if (Explored[mt] == false)
                     {
-                        if (Paths.ContainsKey(mt))
-                        {
-                            Paths[mt] = current;
-                        }
-                        else
+                        //We have not previously seen this location. 
+                        if (!Paths.ContainsKey(mt))
                         {
                             Paths.Add(mt, current);
+                            Available.Add(
+                                neighbour_cost
+                                + Heuristic.Calculate(mt, Problem.Goal),
+                                mt);
                         }
-                        Available.Add(
-                            SearchHelper.GetPathLengthFromStart(mt, Paths, Problem.Start)
-                            + Heuristic.Calculate(mt, Problem.Goal),
-                            mt);
+                        //We have seen this location before, so check if the path we are currently on 
+                        //is cheaper than the last route take to this location. If it is shorter, we 
+                        //overwrite the Paths value to connect the Location to our current location.
+                        else if (neighbour_cost < SearchHelper.GetPathLengthFromStart(mt, Paths, Problem.Start))
+                        {
+                            Paths[mt] = current;
+                            Available.Add(
+                                neighbour_cost
+                                + Heuristic.Calculate(mt, Problem.Goal),
+                                mt);
+                        }
                     }
+
                 }
             }
             DateTime end_time = DateTime.Now;

@@ -68,7 +68,6 @@
     <Compile Include="Search\BestFirstSearch.cs" />
     <Compile Include="Search\BreadthFirstSearch.cs" />
     <Compile Include="Search\DepthFirstSearch.cs" />
-    <Compile Include="Search\DuplicateKeyComparer.cs" />
     <Compile Include="Search\Heuristics\EuclidianDistance.cs" />
     <Compile Include="Search\Heuristics\Heuristic.cs" />
     <Compile Include="Search\Heuristics\TileDistanceHeuristic.cs" />
@@ -79,6 +78,7 @@
     <Compile Include="Search\SearchManager.cs" />
     <Compile Include="Search\SearchProblem.cs" />
     <Compile Include="Search\SearchResults.cs" />
+    <Compile Include="Search\SortedList.cs" />
     <Compile Include="Utils\StringUtils.cs" />
     <Compile Include="Utils\Logger.cs" />
     <Compile Include="MainWindow.xaml.cs">
