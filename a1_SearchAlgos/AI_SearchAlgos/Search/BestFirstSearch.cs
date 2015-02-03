@@ -39,7 +39,6 @@ namespace AI_SearchAlgos.Search
             Available.Add(0, Problem.Start);
 
             MapTile current = null;
-            int current_cost;
             DateTime start_time = DateTime.Now;
             while(Available.Count != 0)
             {
@@ -48,12 +47,11 @@ namespace AI_SearchAlgos.Search
                     r.SpaceComplexity = Available.Count;
                 }
 
-                current = Available.Pop();
-                
+                current = Available.Pop();   
                 r.TimeComplexity++; 
 
                 Explored[current] = true;
-
+                
                 //If we have recieved the destination, we have completed the search.
                 if(current == Problem.Goal)
                 {

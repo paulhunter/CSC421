@@ -60,7 +60,8 @@ namespace AI_SearchAlgos
             Algorithms.Items.Add(new IterativeDeepeningSearch());
             Algorithms.Items.Add(new BestFirstSearch(new EuclidianDistance()));
             Algorithms.Items.Add(new BestFirstSearch(new TileDistanceHeuristic()));
-            
+            Algorithms.Items.Add(new AStarSearch(new EuclidianDistance()));
+            Algorithms.Items.Add(new AStarSearch(new TileDistanceHeuristic()));
             Algorithms.SelectedIndex = 0;
 
 
