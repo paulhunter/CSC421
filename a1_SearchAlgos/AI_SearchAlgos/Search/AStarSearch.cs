@@ -23,6 +23,7 @@ namespace AI_SearchAlgos.Search
         }
         public SearchResults Search(HexagonalTileSearchProblem Problem)
         {
+            /* ----- SETUP ----- */
             SearchResults r = new SearchResults();
             if (Problem == null)
                 return r;
@@ -38,6 +39,7 @@ namespace AI_SearchAlgos.Search
             hSortedList<double, MapTile> Available = new hSortedList<double, MapTile>();
             Available.Add(0, Problem.Start);
 
+            /* ----- SEARCH ----- */
             MapTile current = null;
             int current_cost;
             DateTime start_time = DateTime.Now;
@@ -100,14 +102,13 @@ namespace AI_SearchAlgos.Search
                                     mt);
                             }
                         }
-
                     }
-
                 }
             }
             DateTime end_time = DateTime.Now;
             r.TimeInMilliseconds = (int)(end_time - start_time).TotalMilliseconds;
 
+            /* ----- BACKTRACK PATH GENERATION ----- */
             if(r.Solved)
             {
                 r.Path = SearchHelper.GetPathFromStart(current, Paths, Problem.Start);

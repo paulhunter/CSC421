@@ -28,6 +28,7 @@ namespace AI_SearchAlgos.Utils
     {
         public enum LogLevel : byte
         {
+            Raw = 0xff,
             Debug = 0x00,
             Status = 0x01,
             Information = 0x02,
@@ -255,6 +256,11 @@ namespace AI_SearchAlgos.Utils
             Instance.QueueMessage(Message, LogLevel.Success);
         }
 
+        public static void Raw(string Message)
+        {
+            Instance.QueueMessage(Message, LogLevel.Raw);
+        }
+
         /// <summary>
         /// Internal common logging logic to get the message into the queue. 
         /// </summary>
@@ -290,6 +296,10 @@ namespace AI_SearchAlgos.Utils
             bool ChangeConsole = Level >= m_ConsoleReportLevel;
             switch(Level)
             {
+                case LogLevel.Raw:
+                    if (ChangeConsole) Console.ForegroundColor = ConsoleColor.White;
+                    prefix = "";
+                    break;
                 case LogLevel.Debug:
                     if(ChangeConsole) Console.ForegroundColor = ConsoleColor.Green;
                     prefix = "DBUG";
@@ -316,8 +326,12 @@ namespace AI_SearchAlgos.Utils
                     break;
             }
 
+            string Output;
             //TODO: Move this string to configurator
-            string Output = string.Format("[{0}|{1}] {2}\n", timeStamp, prefix, Message);
+            if(LMsg.Level != LogLevel.Raw)
+                Output = string.Format("[{0}|{1}] {2}\n", timeStamp, prefix, Message);
+            else
+                Output = string.Format("{0}\n", Message);
             
             //Write it out to console for the current app;
             if (Level >= ConsoleReportLevel)

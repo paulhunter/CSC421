@@ -10,8 +10,14 @@ namespace AI_SearchAlgos.Search
     /// The Search Manager class is used to conduct experiments with each of the algorithms
     /// 
     /// </summary>
-    class SearchManager
+    public class SearchManager
     {
-
+        /// <summary>
+        /// 
+        /// </summary>
+        public static void RunTestSuite()
+        {
+            
+        }
     }
 }
