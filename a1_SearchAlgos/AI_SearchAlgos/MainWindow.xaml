@@ -16,23 +16,23 @@
                         <RowDefinition Height="Auto" />
                     </Grid.RowDefinitions>
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="80" />
+                        <ColumnDefinition Width="90" />
                         <ColumnDefinition Width="90" />
                     </Grid.ColumnDefinitions>
                     <StackPanel Grid.Row="0" Grid.Column="0" Orientation="Horizontal" HorizontalAlignment="Right">
                         <Label Content="Width:" Margin="3,3,3,3" VerticalContentAlignment="Center"/>
-                        <TextBox Name="MapWidth_tb" Width="20" MaxLength="2" Text="5" VerticalContentAlignment="Center" Margin="3,3,3,3"/>
+                        <TextBox Name="MapWidth_tb" Width="30" MaxLength="2" KeyDown="Map_tb_KeyDown" GotFocus="Map_tb_GotFocus" Text="5" HorizontalContentAlignment="Center" LostFocus="textbox_LostFocus" VerticalContentAlignment="Center" Margin="3,3,3,3"/>
                     </StackPanel>
                     <StackPanel Grid.Row="1" Grid.Column="0" Orientation="Horizontal" HorizontalAlignment="Right">
                         <Label Content="Height:" Margin="3,3,3,3" VerticalContentAlignment="Center"/>
-                        <TextBox Name="MapHeight_tb" Width="20" MaxLength="2" Text="5" VerticalContentAlignment="Center" Margin="3,3,3,3"/>
+                        <TextBox Name="MapHeight_tb" Width="30" KeyDown="Map_tb_KeyDown" MaxLength="2" Text="5" HorizontalContentAlignment="Center" LostFocus="textbox_LostFocus" VerticalContentAlignment="Center" Margin="3,3,3,3"/>
                     </StackPanel>
                     <StackPanel Grid.Row="0" Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Center">
                         <Label Content="% Free:" Margin="3,3,3,3" VerticalContentAlignment="Center"/>
-                        <TextBox Name="MapPercentFree_tb" Width="30" MaxLength="3" LostFocus="textbox_LostFocus" Text="50" VerticalContentAlignment="Center" Margin="3,3,3,3"/>
+                        <TextBox Name="MapPercentFree_tb" Width="30" MaxLength="3" KeyDown="Map_tb_KeyDown" HorizontalContentAlignment="Center" LostFocus="textbox_LostFocus" Text="50" VerticalContentAlignment="Center" Margin="3,3,3,3"/>
                     </StackPanel>
                     <StackPanel Grid.Row="1" Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Center">
-                        <Button Content="Generate" Height="22" Click="Generate_Click"/>
+                        <Button Content="Generate" Height="24" Click="Generate_Click"/>
                     </StackPanel>
                 </Grid>
             </GroupBox>
@@ -44,6 +44,25 @@
                 </StackPanel>
             </GroupBox>
             
+            <GroupBox Header="Search Problem" BorderBrush="Gray" >
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="200" />
+                    </Grid.ColumnDefinitions>
+                    <StackPanel Grid.Row="0" Grid.Column="0" Orientation="Horizontal" HorizontalAlignment="Left" >
+                        <Label Content="# Locations:" Margin="3,3,3,3" VerticalContentAlignment="Center"/>
+                        <Label Name="TileCount_lbl" FontWeight="Bold" Content="N/A" Margin="3,3,3,3" VerticalContentAlignment="Center"/>
+                    </StackPanel>
+                    <StackPanel Grid.Row="1" Grid.Column="0" Orientation="Horizontal" HorizontalAlignment="Left" >
+                        <Label Content="% Obstacles:" Margin="3,3,3,3" VerticalContentAlignment="Center"/>
+                        <Label Name="Obstactle_lbl" FontWeight="Bold" Content="N/A" Margin="3,3,3,3" VerticalContentAlignment="Center"/>
+                    </StackPanel>
+                </Grid>
+            </GroupBox>
             
             <GroupBox Header="Search Results" BorderBrush="Gray" >
                 <Grid>

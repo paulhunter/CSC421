@@ -16,6 +16,7 @@ namespace AI_SearchAlgos.Search
         {
             this.Heuristic = Heuristic;
         }
+        private AStarSearch() { }
 
         public override string ToString()
         {

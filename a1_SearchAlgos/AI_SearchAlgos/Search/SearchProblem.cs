@@ -19,6 +19,8 @@ namespace AI_SearchAlgos.Search
         public Map SearchSpace;
         private Random r;
         private int obstacles;
+        private double _intentededObstacles;
+        private double _actualObstacles;
 
         public HexagonalTileSearchProblem(uint Width, uint Height, double FreePathPercentage)
         {
@@ -27,10 +29,9 @@ namespace AI_SearchAlgos.Search
 #endif
             Log.Info(string.Format("SearchProblem: Creating new Instance of  [w:{0}, h:{1}, p:{2:0.000}]", Width, Height, FreePathPercentage));
             r = new Random();
-            uint x, y;
+            _intentededObstacles = FreePathPercentage;
             Log.Info("SearchProblem: Generating Map...");
             SearchSpace = new Map(Width, Height);
-            obstacles = (int)SearchSpace.EdgeCount - (int)Math.Floor(FreePathPercentage*SearchSpace.EdgeCount);
             Log.Info("SearchProblem: Creating Obstacles...");
             CreateObstacles();
             Log.Info("SearchProblem: Selecting Random Start/Goal");
@@ -40,6 +41,24 @@ namespace AI_SearchAlgos.Search
             DateTime done = DateTime.Now;
             Utils.Log.Info(string.Format("HexagonalTileSearchProblem: {0:0} milliseconds total to create problem instance [w:{1}, h:{2}, p:{3:0.000}].", (done - now).TotalMilliseconds, SearchSpace.Width, SearchSpace.Height, SearchSpace.FreePathPercentage));
 #endif
+        }
+
+        public double IntendedObstaclePercentage
+        {
+            get
+            {
+                return _intentededObstacles * 100;
+            }
+          
+        }
+
+        public double ActualObstaclePercentage
+        {
+            get
+            {
+                return _actualObstacles * 100;
+            }
+           
         }
 
         private void SelectStartAndGoal()
@@ -59,7 +78,9 @@ namespace AI_SearchAlgos.Search
         }
 
         private void CreateObstacles()
-        {
+        {   
+            obstacles = (int)SearchSpace.EdgeCount - (int)Math.Floor(_intentededObstacles*SearchSpace.EdgeCount);
+            _actualObstacles = ( obstacles / (SearchSpace.EdgeCount * 1.0));
             for (int a = 0; a < obstacles; a++)
             {
                 SearchSpace.RemoveRandomEdge();

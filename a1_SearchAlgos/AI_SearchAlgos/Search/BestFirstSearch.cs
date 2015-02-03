@@ -17,6 +17,8 @@ namespace AI_SearchAlgos.Search
             this.Heuristic = Heuristic;
         }
 
+        private BestFirstSearch() { }
+
         public override string ToString()
         {
             return "Best First Search - " + Heuristic.ToString();

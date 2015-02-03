@@ -37,6 +37,7 @@ namespace AI_SearchAlgos
         private uint map_PercentFree = 50;
 
         private HexagonalTileSearchProblem _activeProblem;
+        private SearchResults _activeResults;
         private Map _activeMap;
 
         private List<Polygon> OnScreenTiles;
@@ -46,6 +47,7 @@ namespace AI_SearchAlgos
         {
             Utils.Log.Start();
             InitializeComponent();
+
             this._thisInstance = this;
             Init();
         }
@@ -62,6 +64,9 @@ namespace AI_SearchAlgos
             Algorithms.Items.Add(new BestFirstSearch(new TileDistanceHeuristic()));
             Algorithms.Items.Add(new AStarSearch(new EuclidianDistance()));
             Algorithms.Items.Add(new AStarSearch(new TileDistanceHeuristic()));
+            Algorithms.Items.Add(new HillClimbSearch(new EuclidianDistance()));
+            Algorithms.Items.Add(new HillClimbSearch(new TileDistanceHeuristic()));
+            
             Algorithms.SelectedIndex = 0;
 
 
@@ -85,6 +90,8 @@ namespace AI_SearchAlgos
             ClearMap();
             this._activeMap = _activeProblem.SearchSpace;
             UpdateMap();
+            this._activeResults = null;
+            RefeshUIComponents();
         }
 
         private void ClearMap()
@@ -108,6 +115,31 @@ namespace AI_SearchAlgos
                     this.MapWidth_tb.Text = string.Format("{0:0}", this.map_Width);
                     this.MapHeight_tb.Text = string.Format("{0:0}", this.map_Height);
                     this.MapPercentFree_tb.Text = string.Format("{0:0}", this.map_PercentFree);
+                    if(this._activeResults != null)
+                    {
+                        this.TimeComplexity_lbl.Content = string.Format("{0:0}", this._activeResults.TimeComplexity);
+                        this.SpaceComplexity_lbl.Content = string.Format("{0:0}", this._activeResults.SpaceComplexity);
+                        this.RunTime_lbl.Content = string.Format("{0:0.000}", this._activeResults.TimeInMilliseconds / 1000.0);
+                        this.PathLength_lbl.Content = string.Format("{0:0}", this._activeResults.Path == null ? 0 : this._activeResults.Path.Count - 1);
+
+                        if (this._activeResults.Solved)
+                        {
+                            foreach (MapTile mt in _activeResults.Path)
+                            {
+                                this.OnScreenTiles.ElementAt(mt.ID).Fill = System.Windows.Media.Brushes.CornflowerBlue;
+                                this.OnScreenTiles.ElementAt(mt.ID).InvalidateVisual();
+                            }
+                        }
+                    }
+
+                    if(this._activeProblem != null)
+                    {
+                        this.TileCount_lbl.Content = string.Format("{0:0}", this._activeProblem.SearchSpace.Size);
+                        this.Obstactle_lbl.Content = string.Format("~{0:0}% / {0:0.00}%",
+                            this._activeProblem.IntendedObstaclePercentage,
+                            this._activeProblem.ActualObstaclePercentage);
+                    }
+                    
                 }));
         }
 
@@ -231,43 +263,88 @@ namespace AI_SearchAlgos
             return p;
         }
 
-        private void ApplyBreadthFirstSearch()
-        {
-            if(this._activeProblem != null)
-            {
-                /*
-                SearchResults sr = BreadthFirstSearch.Search(_activeProblem);
-                if(sr.Solved)
-                {
-                    foreach (MapTile mt in sr.Path)
-                    {
-                        this.OnScreenTiles.ElementAt(mt.ID).Fill = System.Windows.Media.Brushes.CornflowerBlue;
-                        this.OnScreenTiles.ElementAt(mt.ID).InvalidateVisual();
-                    }
-                }
-                 */
-            }
-        }
-
         private void StartSearch_Click(object sender, RoutedEventArgs e)
         {
             ISearchAlgorithm sa = (ISearchAlgorithm)this.Algorithms.SelectedItem;
-            SearchResults sr = sa.Search(_activeProblem);
-            if(sr.Solved)
-            {
-                foreach (MapTile mt in sr.Path)
-                {
-                    this.OnScreenTiles.ElementAt(mt.ID).Fill = System.Windows.Media.Brushes.CornflowerBlue;
-                    this.OnScreenTiles.ElementAt(mt.ID).InvalidateVisual();
-                }
-            }
+            _activeResults = sa.Search(_activeProblem);
+            RefeshUIComponents();
+
+            
         }
 
         
+        private void ValidateMapWidth()
+        {
+            uint new_w;
+            if(uint.TryParse(this.MapWidth_tb.Text, out new_w))
+            {
+                if(new_w > 20)
+                    new_w = 20;
+                map_Width = new_w;
+            }
+            this.MapWidth_tb.Text = string.Format("{0:0}", map_Width);
+        }
+
+        private void ValidateMapHeight()
+        {
+            uint new_h;
+            if(uint.TryParse(this.MapHeight_tb.Text, out new_h))
+            {
+                if(new_h > 20)
+                    new_h = 20;
+                map_Height = new_h;
+            }
+            this.MapHeight_tb.Text = string.Format("{0:0}", map_Height);
+        }
+
+        private void ValidateMapPathPerc()
+        {
+            uint new_p;
+            if(uint.TryParse(this.MapPercentFree_tb.Text, out new_p))
+            {
+                if(new_p > 100)
+                    new_p = 100;
+                map_PercentFree = new_p;
+            }
+            this.MapPercentFree_tb.Text = string.Format("{0:0}", map_PercentFree);
+        }
+
+        private void ValidateTextbox(TextBox element)
+        {
+            if (element == this.MapWidth_tb)
+            {
+                ValidateMapWidth();
+            }
+            else if (element == this.MapHeight_tb)
+            {
+                ValidateMapHeight();
+            }
+            else if (element == this.MapPercentFree_tb)
+            {
+                ValidateMapPathPerc();
+            }
+            
+        }
+
 
         private void textbox_LostFocus(object sender, RoutedEventArgs e)
         {
-
+            ValidateTextbox(sender as TextBox);
         }
+
+        private void Map_tb_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.Enter)
+            {
+                ValidateTextbox(sender as TextBox);
+                (sender as TextBox).SelectAll();
+            }
+        }
+
+        private void Map_tb_GotFocus(object sender, RoutedEventArgs e)
+        {
+            (sender as TextBox).SelectAll();
+        } 
+
     }
 }
