@@ -13,9 +13,10 @@ namespace AI_SearchAlgos.Search.Heuristics
 
         public double Calculate(MapTile A, MapTile B)
         {
-             return Math.Sqrt(
+            double r = Math.Sqrt(
                     Math.Pow((A.X - B.X), 2) + 
                     Math.Pow((A.Y - B.Y), 2));
+            return r;
         }
 
         public override string ToString()

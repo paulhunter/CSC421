@@ -39,7 +39,7 @@ namespace AI_SearchAlgos.Search
             Available.Add(0, Problem.Start);
 
             MapTile current = null;
-            int neighbour_cost;
+            int current_cost;
             DateTime start_time = DateTime.Now;
             while(Available.Count != 0)
             {
@@ -49,7 +49,6 @@ namespace AI_SearchAlgos.Search
                 }
 
                 current = Available.Pop();
-                neighbour_cost = SearchHelper.GetPathLengthFromStart(current, Paths, Problem.Start) + 1;
                 
                 r.TimeComplexity++; 
 
@@ -68,27 +67,37 @@ namespace AI_SearchAlgos.Search
                 {
                     if (Explored[mt] == false)
                     {
-                        //We have not previously seen this location. 
-                        if (!Paths.ContainsKey(mt))
-                        {
-                            Paths.Add(mt, current);
-                            Available.Add(
-                                neighbour_cost
-                                + Heuristic.Calculate(mt, Problem.Goal),
-                                mt);
-                        }
-                        //We have seen this location before, so check if the path we are currently on 
-                        //is cheaper than the last route take to this location. If it is shorter, we 
-                        //overwrite the Paths value to connect the Location to our current location.
-                        else if (neighbour_cost < SearchHelper.GetPathLengthFromStart(mt, Paths, Problem.Start))
+                        if(!Paths.ContainsKey(mt))
                         {
                             Paths[mt] = current;
                             Available.Add(
-                                neighbour_cost
-                                + Heuristic.Calculate(mt, Problem.Goal),
+                                Heuristic.Calculate(mt, Problem.Goal),
                                 mt);
                         }
+                        else
+                        {
+                            int old_cost = SearchHelper.GetPathLengthFromStart(mt, Paths, Problem.Start);
+                            MapTile oldParent = Paths[mt];
+                            Paths[mt] = current;
+                            int new_cost = SearchHelper.GetPathLengthFromStart(mt, Paths, Problem.Start);
+                            
+                            //If the new cost to the tile is more than our previous
+                            //path to this tile, we want to keep our previous parent. 
+                            if(new_cost > old_cost)
+                            {
+                                Paths[mt] = oldParent;
+                            }
+                            else
+                            {
+                                Available.Add(
+                                Heuristic.Calculate(mt, Problem.Goal),
+                                mt);
+                            }
+
+                        }
                     }
+                    
+
 
                 }
             }

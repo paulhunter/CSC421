@@ -57,14 +57,14 @@ namespace AI_SearchAlgos.Search
                     }
                     else
                     {
-                        //We have a same value. Walk under we find the end of this section of the list. 
-                        //because we handle the end case above, we can make the assumption that we 
-                        //not walk off the end of the list before we find the end of this set. 
+                        //We have a same value. Walk back until we find the end of this section of the list. 
+                        //because we handle the very front case above, we can make the assumption that we 
+                        //not walk off the end of the list before we find the end of this set of equal keys. 
                         while (Key.CompareTo(_list[mid].Item1) == 0) mid--;
                         _list.Insert(mid+1, new Tuple<K, T>(Key, Value));
                         break;
                     }
-                }
+               } 
             }
         }
 
