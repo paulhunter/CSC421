@@ -10,11 +10,6 @@ namespace AI_SearchAlgos.Search
     using Utils;
     public class BreadthFirstSearch : ISearchAlgorithm
     {
-        Queue<Tuple<MapTile, uint>> Frontier;
-        Dictionary<MapTile, MapTile> Paths;
-        Dictionary<MapTile, bool> Explored;
-        SearchExecution se;
-        SearchExecution.TileState[] states;
 
         public override string ToString()
         {
@@ -26,6 +21,10 @@ namespace AI_SearchAlgos.Search
         }
         public SearchResults Search(HexagonalTileSearchProblem Problem, uint DepthLimit)
         {
+            Queue<Tuple<MapTile, uint>> Frontier;
+            Dictionary<MapTile, MapTile> Paths;
+            Dictionary<MapTile, bool> Explored;
+
             SearchResults r = new SearchResults();
             if (Problem == null)
                 return r;
@@ -75,9 +74,15 @@ namespace AI_SearchAlgos.Search
                 {
                     if(Frontier.FirstOrDefault(p => p.Item1 == mt) == null && Explored[mt] == false)
                     {
-                        Paths.Add(mt, current);
+                        try
+                        {
+                            Paths.Add(mt, current);
+                        }
+                        catch (ArgumentException)
+                        {
+                            Paths[mt] = current;
+                        }
                         Frontier.Enqueue(new Tuple<MapTile, uint>(mt, currentDepth - 1));
-                        
                     }
                 }
             }

@@ -160,7 +160,7 @@ namespace AI_SearchAlgos.Utils
             m_LogQueue = new Queue<Log.LogMessage>();
             //TODO: Move to Configuration File.
             //TODO: Expose with Run-Time Configuration 
-            m_ConsoleReportLevel = LogLevel.Status;
+            m_ConsoleReportLevel = LogLevel.Warning;
             m_NetworkReportLevel = LogLevel.Information;
 
             //TODO: Move to Configuration File.

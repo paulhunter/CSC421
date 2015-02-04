@@ -19,50 +19,45 @@ namespace AI_SearchAlgos.Search
         public Map SearchSpace;
         private Random r;
         private int obstacles;
-        private double _intentededObstacles;
-        private double _actualObstacles;
+        private double _intentededFreeObstacles;
+        private double _actualFreeObstacles;
+        private uint _iWidth;
+        private uint _iHeight;
 
         public HexagonalTileSearchProblem(uint Width, uint Height, double FreePathPercentage)
         {
-#if DEBUG
-            DateTime now = DateTime.Now;
-#endif
             Log.Info(string.Format("SearchProblem: Creating new Instance of  [w:{0}, h:{1}, p:{2:0.000}]", Width, Height, FreePathPercentage));
-            r = new Random();
-            _intentededObstacles = FreePathPercentage;
-            Log.Info("SearchProblem: Generating Map...");
-            SearchSpace = new Map(Width, Height);
-            Log.Info("SearchProblem: Creating Obstacles...");
-            CreateObstacles();
-            Log.Info("SearchProblem: Selecting Random Start/Goal");
-            SelectStartAndGoal();
-
-#if DEBUG
-            DateTime done = DateTime.Now;
-            Utils.Log.Info(string.Format("HexagonalTileSearchProblem: {0:0} milliseconds total to create problem instance [w:{1}, h:{2}, p:{3:0.000}].", (done - now).TotalMilliseconds, SearchSpace.Width, SearchSpace.Height, SearchSpace.FreePathPercentage));
-#endif
+            _intentededFreeObstacles = FreePathPercentage;
+            _iWidth = Width;
+            _iHeight = Height;
         }
 
-        public double IntendedObstaclePercentage
+        public HexagonalTileSearchProblem Clone()
+        {
+            return new HexagonalTileSearchProblem(_iWidth, _iHeight, this._intentededFreeObstacles);
+        }
+
+        public double IntendedFreeObstaclePercentage
         {
             get
             {
-                return _intentededObstacles * 100;
+                return _intentededFreeObstacles * 100;
             }
           
         }
 
-        public double ActualObstaclePercentage
+        public double ActualFreeObstaclePercentage
         {
             get
             {
-                return _actualObstacles * 100;
+                return _actualFreeObstacles * 100;
             }
            
         }
 
-        private void SelectStartAndGoal()
+        public void SelectRandomStartAndGoal()
         {
+            Random r = new Random();
             uint x, y;
             do
             {
@@ -79,8 +74,8 @@ namespace AI_SearchAlgos.Search
 
         private void CreateObstacles()
         {   
-            obstacles = (int)SearchSpace.EdgeCount - (int)Math.Floor(_intentededObstacles*SearchSpace.EdgeCount);
-            _actualObstacles = ( obstacles / (SearchSpace.EdgeCount * 1.0));
+            obstacles = (int)SearchSpace.EdgeCount - (int)Math.Floor(_intentededFreeObstacles*SearchSpace.EdgeCount);
+            _actualFreeObstacles = ( obstacles / (SearchSpace.EdgeCount * 1.0));
             for (int a = 0; a < obstacles; a++)
             {
                 SearchSpace.RemoveRandomEdge();
@@ -89,9 +84,18 @@ namespace AI_SearchAlgos.Search
 
         public void Reset()
         {
+            if(this.SearchSpace == null)
+            {
+                this.SearchSpace = new Map(_iWidth, _iHeight);
+            }
             this.SearchSpace.Reset();
             this.CreateObstacles();
-            this.SelectStartAndGoal();
+            this.SelectRandomStartAndGoal();
+        }
+
+        public override string ToString()
+        {
+            return string.Format("{0},{1}", SearchSpace.Size, _intentededFreeObstacles);
         }
 
     }

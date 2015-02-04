@@ -38,6 +38,7 @@ namespace AI_SearchAlgos
 
         private HexagonalTileSearchProblem _activeProblem;
         private SearchResults _activeResults;
+        private String _activeResultsMethod;
         private Map _activeMap;
 
         private List<Polygon> OnScreenTiles;
@@ -117,6 +118,7 @@ namespace AI_SearchAlgos
                     this.MapPercentFree_tb.Text = string.Format("{0:0}", this.map_PercentFree);
                     if(this._activeResults != null)
                     {
+                        this.SR_gp.Header = "Search Results - " + _activeResultsMethod;
                         this.TimeComplexity_lbl.Content = string.Format("{0:0}", this._activeResults.TimeComplexity);
                         this.SpaceComplexity_lbl.Content = string.Format("{0:0}", this._activeResults.SpaceComplexity);
                         this.RunTime_lbl.Content = string.Format("{0:0.000}", this._activeResults.TimeInMilliseconds / 1000.0);
@@ -131,13 +133,16 @@ namespace AI_SearchAlgos
                             }
                         }
                     }
+                     
 
                     if(this._activeProblem != null)
                     {
+                        this.OnScreenTiles.ElementAt(this._activeProblem.Start.ID).Fill = System.Windows.Media.Brushes.LightGreen;
+                        this.OnScreenTiles.ElementAt(this._activeProblem.Goal.ID).Fill = System.Windows.Media.Brushes.LightCoral;
                         this.TileCount_lbl.Content = string.Format("{0:0}", this._activeProblem.SearchSpace.Size);
                         this.Obstactle_lbl.Content = string.Format("~{0:0}% / {0:0.00}%",
-                            this._activeProblem.IntendedObstaclePercentage,
-                            this._activeProblem.ActualObstaclePercentage);
+                            this._activeProblem.IntendedFreeObstaclePercentage,
+                            this._activeProblem.ActualFreeObstaclePercentage);
                     }
                     
                 }));
@@ -173,8 +178,6 @@ namespace AI_SearchAlgos
                 }
 
                 //Highlight Start and End as Light Green and Red
-                this.OnScreenTiles.ElementAt(this._activeProblem.Start.ID).Fill = System.Windows.Media.Brushes.LightGreen;
-                this.OnScreenTiles.ElementAt(this._activeProblem.Goal.ID).Fill = System.Windows.Media.Brushes.LightCoral;
 
                 this.Landscape.InvalidateVisual();
                 this.Paths.InvalidateVisual();
@@ -267,9 +270,8 @@ namespace AI_SearchAlgos
         {
             ISearchAlgorithm sa = (ISearchAlgorithm)this.Algorithms.SelectedItem;
             _activeResults = sa.Search(_activeProblem);
+            _activeResultsMethod = sa.ToString();
             RefeshUIComponents();
-
-            
         }
 
         

@@ -58,13 +58,13 @@
                         <Label Name="TileCount_lbl" FontWeight="Bold" Content="N/A" Margin="3,3,3,3" VerticalContentAlignment="Center"/>
                     </StackPanel>
                     <StackPanel Grid.Row="1" Grid.Column="0" Orientation="Horizontal" HorizontalAlignment="Left" >
-                        <Label Content="% Obstacles:" Margin="3,3,3,3" VerticalContentAlignment="Center"/>
+                        <Label Content="% Free Obstacles:" Margin="3,3,3,3" VerticalContentAlignment="Center"/>
                         <Label Name="Obstactle_lbl" FontWeight="Bold" Content="N/A" Margin="3,3,3,3" VerticalContentAlignment="Center"/>
                     </StackPanel>
                 </Grid>
             </GroupBox>
             
-            <GroupBox Header="Search Results" BorderBrush="Gray" >
+            <GroupBox Header="Search Results" Name="SR_gp" BorderBrush="Gray" >
                 <Grid>
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto" />

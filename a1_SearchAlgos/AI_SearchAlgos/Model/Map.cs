@@ -232,13 +232,5 @@ namespace AI_SearchAlgos.Model
 #endif
         }
 
-
-
-        public void RemoveNeighbour(MapTile A, MapTile B)
-        {
-
-
-        }
-
     }
 }
