@@ -80,6 +80,7 @@
     <Compile Include="Search\SearchProblem.cs" />
     <Compile Include="Search\SearchResults.cs" />
     <Compile Include="Search\SortedList.cs" />
+    <Compile Include="Utils\RandomFix.cs" />
     <Compile Include="Utils\StringUtils.cs" />
     <Compile Include="Utils\Logger.cs" />
     <Compile Include="MainWindow.xaml.cs">

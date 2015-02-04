@@ -17,7 +17,7 @@ namespace AI_SearchAlgos.Search
 
     public class SearchManager
     {
-        const uint THREADS = 2;
+        static int THREADS = Environment.ProcessorCount;
 
         static ISearchAlgorithm[] Algos = new ISearchAlgorithm[]
         {
@@ -32,10 +32,10 @@ namespace AI_SearchAlgos.Search
             new HillClimbSearch(new Heuristics.TileDistanceHeuristic())
         };
 
-        static uint TotalTests = 6 * (uint)Algos.Count() * 100;
+        static uint TotalTests;
         static volatile uint CompleteTests = 0;
 
-        static Queue<Tuple<HexagonalTileSearchProblem, ManualResetEvent, int>> tasks;
+        static Queue<Tuple<HexagonalTileSearchProblem, ManualResetEvent, int, int>> tasks;
         static Stream output;
 
         /// <summary>
@@ -48,10 +48,7 @@ namespace AI_SearchAlgos.Search
         public static void RunTestSuite()
         {
             output = File.Open("Output.txt", FileMode.Create);
-            ManualResetEvent[] doneEvents = new ManualResetEvent[6*10];
-            List<Thread> threads = new List<Thread>();
-            int i = 0;
-            Thread t;
+            Log.Success(string.Format("Preparing to Utilize {0} logical processors", THREADS));
 
             HexagonalTileSearchProblem[] Configs = new HexagonalTileSearchProblem[]
             {
@@ -60,20 +57,34 @@ namespace AI_SearchAlgos.Search
                 new HexagonalTileSearchProblem(5, 4, 0.2),
                 new HexagonalTileSearchProblem(5, 4, 0.5),
                 new HexagonalTileSearchProblem(6, 6, 0.2), 
-                new HexagonalTileSearchProblem(6, 6, 0.5)
+                new HexagonalTileSearchProblem(6, 6, 0.5),
+
+                new HexagonalTileSearchProblem(10, 10, 0.2),
+                new HexagonalTileSearchProblem(10, 10, 0.5),
+                new HexagonalTileSearchProblem(15, 15, 0.2),
+                new HexagonalTileSearchProblem(15, 15, 0.5)
             };
 
-            Tuple<HexagonalTileSearchProblem, ManualResetEvent, int> param;
-            tasks = new Queue<Tuple<HexagonalTileSearchProblem, ManualResetEvent, int>>();
+
+            TotalTests = (uint)Configs.Count() * (uint)Algos.Count() * 100;
+            ManualResetEvent[] doneEvents = new ManualResetEvent[Configs.Count() * 5];
+            List<Thread> threads = new List<Thread>();
+            int i = 0;
+            int test_num = 0;
+            Thread t;
+
+            Tuple<HexagonalTileSearchProblem, ManualResetEvent, int, int> param;
+            tasks = new Queue<Tuple<HexagonalTileSearchProblem, ManualResetEvent, int, int>>();
+            
             foreach(HexagonalTileSearchProblem p in Configs)
             {
-                for (int x = 0; x < 10; x++)
+                for (int x = 0; x < 5; x++)
                 {
                     doneEvents[i] = new ManualResetEvent(false);
-                    param = new Tuple<HexagonalTileSearchProblem, ManualResetEvent, int>(
-                        p.Clone(), doneEvents[i], i++
-                        );
+                    param = new Tuple<HexagonalTileSearchProblem, ManualResetEvent, int, int>(
+                        p.Clone(), doneEvents[i], i++, test_num);
                     tasks.Enqueue(param);
+                    test_num += 20;
                 }
             }
 
@@ -96,7 +107,7 @@ namespace AI_SearchAlgos.Search
 
         private static void TaskThread()
         {
-            Tuple<HexagonalTileSearchProblem, ManualResetEvent, int> p = null;
+            Tuple<HexagonalTileSearchProblem, ManualResetEvent, int, int> p = null;
             while(true)
             {
                 if(tasks.Count == 0)
@@ -110,38 +121,39 @@ namespace AI_SearchAlgos.Search
                     else
                         break;
                 }
-                Run10Tests(p);
+                Run20Tests(p);
             }
         }
 
-        private static void Run10Tests(Tuple<HexagonalTileSearchProblem,ManualResetEvent,int> Param)
+        private static void Run20Tests(Tuple<HexagonalTileSearchProblem,ManualResetEvent,int,int> Param)
         {
             HexagonalTileSearchProblem problem = Param.Item1;
             ManualResetEvent doneEvent = Param.Item2;
             int ConfigurationNumber = Param.Item3;
+            int TestSequenceNumber = Param.Item4;
             SearchResults[] results = new SearchResults[Algos.Count()];
-            for (int i = 0; i < 10; i++)
+            for (int i = 0; i < 20; i++, TestSequenceNumber++)
             {
-                Log.Warning(string.Format("Test({0}) - Generating Problem {1}...", ConfigurationNumber, i));
+                Log.Warning(string.Format("Test({0}) - Generating Problem {1}...", ConfigurationNumber, TestSequenceNumber));
                 problem.Reset();
                 SearchResults sr = Algos[0].Search(problem);
                 while (sr.Solved != true)
                 {
-                    Log.Warning(string.Format("Test({0}) - Problem {1} Not Solvable, regenerating...", ConfigurationNumber, i));
+                    Log.Warning(string.Format("Test({0}) - Problem {1} Not Solvable, regenerating...", ConfigurationNumber, TestSequenceNumber));
                     problem.SelectRandomStartAndGoal();
                     sr = Algos[0].Search(problem);
                 }
 
-                Log.Warning(string.Format("Test({0} : {1}) - Applying Search Algorithms...", ConfigurationNumber, i));
+                Log.Warning(string.Format("Test({0} : {1}) - Applying Search Algorithms...", ConfigurationNumber, TestSequenceNumber));
                 int a = 0;
                 foreach (ISearchAlgorithm al in Algos)
                 {
                     results[a] = al.Search(problem);
                     CompleteTests++;
-                    Log.Success(string.Format("# {0:000.000}% #", (CompleteTests * 1.0) / TotalTests));
+                    Log.Success(string.Format("# {0:000.000}% #", (CompleteTests * 1.0) / TotalTests * 100));
                     a++;
                 }
-                WriteResultsToCSV(ConfigurationNumber, i, problem, results);
+                WriteResultsToCSV(TestSequenceNumber, problem, results);
             }
 
 
@@ -149,10 +161,10 @@ namespace AI_SearchAlgos.Search
 
         }
 
-        private static void WriteResultsToCSV(int Conf, int Prob, HexagonalTileSearchProblem Problem, SearchResults[] Results)
+        private static void WriteResultsToCSV(int Prob, HexagonalTileSearchProblem Problem, SearchResults[] Results)
         {
             StringBuilder sb = new StringBuilder(1024);
-            sb.AppendFormat("{0}-{1},{2},", Conf, Prob, Problem.ToString());
+            sb.AppendFormat("{0},{1},", Prob, Problem.ToString());
             foreach(SearchResults sr in Results)
             {
                 sb.AppendFormat("{0},", sr.ToString());

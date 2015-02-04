@@ -17,7 +17,6 @@ namespace AI_SearchAlgos.Search
         public MapTile Start;
         public MapTile Goal;
         public Map SearchSpace;
-        private Random r;
         private int obstacles;
         private double _intentededFreeObstacles;
         private double _actualFreeObstacles;
@@ -57,7 +56,7 @@ namespace AI_SearchAlgos.Search
 
         public void SelectRandomStartAndGoal()
         {
-            Random r = new Random();
+            Random r = new Random(Utils.RandomFix.GetSeed());
             uint x, y;
             do
             {

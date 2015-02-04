@@ -219,7 +219,7 @@ namespace AI_SearchAlgos.Model
 #if DEBUG
             DateTime now = DateTime.Now;
 #endif
-            Random r = new Random();
+            Random r = new Random(Utils.RandomFix.GetSeed());
             int i = r.Next(0, _edges.Count);
             Tuple<MapTile, MapTile> mtp = _edges.ElementAt(i);
             mtp.Item1.RemoveNeighbour(mtp.Item2);
