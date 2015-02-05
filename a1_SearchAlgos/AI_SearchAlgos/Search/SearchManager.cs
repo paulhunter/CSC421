@@ -47,8 +47,11 @@ namespace AI_SearchAlgos.Search
         /// </summary>
         public static void RunTestSuite()
         {
+            DateTime start_time = DateTime.Now;
             output = File.Open("Output.txt", FileMode.Create);
             Log.Success(string.Format("Preparing to Utilize {0} logical processors", THREADS));
+            Log.Success("Press enter to begin...");
+            Console.ReadLine();
 
             HexagonalTileSearchProblem[] Configs = new HexagonalTileSearchProblem[]
             {
@@ -99,10 +102,14 @@ namespace AI_SearchAlgos.Search
             }
             WaitHandle.WaitAll(doneEvents);
 
-            Log.Success("All Tests Complete - Press Enter to Exit");
-            Console.ReadLine();
+            Log.Status("Flushing results to file...");
+            output.Flush();
             output.Close();
 
+            DateTime end_time = DateTime.Now;
+            Log.Status(string.Format("Complete Test Suite executed in {0:0.000} seconds.", (end_time - start_time).TotalMilliseconds / 1000.0));
+            Log.Success("All Tests Complete - Press Enter to Exit");
+            Console.ReadLine();
         }
 
         private static void TaskThread()
@@ -131,20 +138,36 @@ namespace AI_SearchAlgos.Search
             ManualResetEvent doneEvent = Param.Item2;
             int ConfigurationNumber = Param.Item3;
             int TestSequenceNumber = Param.Item4;
+            int RegenPaths = 5;
             SearchResults[] results = new SearchResults[Algos.Count()];
             for (int i = 0; i < 20; i++, TestSequenceNumber++)
             {
-                Log.Warning(string.Format("Test({0}) - Generating Problem {1}...", ConfigurationNumber, TestSequenceNumber));
+                RegenPaths = 5;
+                Log.Status(string.Format("Test({0}) - Generating Problem {1}...", ConfigurationNumber, TestSequenceNumber));
                 problem.Reset();
                 SearchResults sr = Algos[0].Search(problem);
                 while (sr.Solved != true)
                 {
-                    Log.Warning(string.Format("Test({0}) - Problem {1} Not Solvable, regenerating...", ConfigurationNumber, TestSequenceNumber));
-                    problem.SelectRandomStartAndGoal();
+                    
+                    if (RegenPaths == 0)
+                    {
+                        Log.Status(string.Format("Test({0}) - Problem {1} Not Solvable, regenerating...", ConfigurationNumber, TestSequenceNumber));
+                        problem.Reset();
+                        RegenPaths = 5;
+                        
+                    }
+                    else
+                    {
+                        Log.Status(string.Format("Test({0}) - Reselecting Start/Goal...", ConfigurationNumber, TestSequenceNumber));
+                        problem.SelectRandomStartAndGoal();
+                        
+                    }
+                    
                     sr = Algos[0].Search(problem);
+                    RegenPaths--;
                 }
 
-                Log.Warning(string.Format("Test({0} : {1}) - Applying Search Algorithms...", ConfigurationNumber, TestSequenceNumber));
+                Log.Status(string.Format("Test({0} : {1}) - Applying Search Algorithms...", ConfigurationNumber, TestSequenceNumber));
                 int a = 0;
                 foreach (ISearchAlgorithm al in Algos)
                 {

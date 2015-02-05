@@ -30,7 +30,7 @@ namespace AI_SearchAlgos.Utils
         {
             Raw = 0xff,
             Debug = 0x00,
-            Status = 0x01,
+            Status = 0x51,
             Information = 0x02,
             Warning = 0x03,
             Critical = 0x04,
@@ -165,7 +165,7 @@ namespace AI_SearchAlgos.Utils
 
             //TODO: Move to Configuration File.
             Console.BackgroundColor = ConsoleColor.Black;
-            Console.Title = "RapidVision: Log";
+            Console.Title = "CSC 421 - A1 - Search Algrorithms : Log";
 
             //Setup our logging directory if its not already present.
             m_StorageLocation = System.IO.Path.Combine(

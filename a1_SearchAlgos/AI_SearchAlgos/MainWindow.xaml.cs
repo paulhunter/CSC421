@@ -78,16 +78,9 @@ namespace AI_SearchAlgos
 
         private void Generate_Click(object sender, RoutedEventArgs e)
         {
-            if (_activeProblem == null)
-            {
-                _activeProblem = new HexagonalTileSearchProblem(map_Width, map_Height, map_PercentFree/(100.0));
-                Map m = _activeProblem.SearchSpace;
-                Log.Info(string.Format("App: Map created has {0:0.00} free paths of target {1:0.00}", m.FreePathPercentage * 100, 0.2 * 100));
-            }
-            else
-            {
-                _activeProblem.Reset();
-            }
+            _activeProblem = new HexagonalTileSearchProblem(map_Width, map_Height, map_PercentFree/(100.0));
+            _activeProblem.Reset();
+            Log.Info(string.Format("App: Map created has {0:0.00} free paths of target {1:0.00}", _activeProblem.SearchSpace.FreePathPercentage * 100, 0.2 * 100));
             ClearMap();
             this._activeMap = _activeProblem.SearchSpace;
             UpdateMap();
@@ -128,7 +121,7 @@ namespace AI_SearchAlgos
                         {
                             foreach (MapTile mt in _activeResults.Path)
                             {
-                                this.OnScreenTiles.ElementAt(mt.ID).Fill = System.Windows.Media.Brushes.CornflowerBlue;
+                                this.OnScreenTiles.ElementAt(mt.ID).Fill = System.Windows.Media.Brushes.PaleVioletRed;
                                 this.OnScreenTiles.ElementAt(mt.ID).InvalidateVisual();
                             }
                         }
@@ -137,10 +130,10 @@ namespace AI_SearchAlgos
 
                     if(this._activeProblem != null)
                     {
-                        this.OnScreenTiles.ElementAt(this._activeProblem.Start.ID).Fill = System.Windows.Media.Brushes.LightGreen;
-                        this.OnScreenTiles.ElementAt(this._activeProblem.Goal.ID).Fill = System.Windows.Media.Brushes.LightCoral;
+                        this.OnScreenTiles.ElementAt(this._activeProblem.Start.ID).Fill = System.Windows.Media.Brushes.MediumSeaGreen;
+                        this.OnScreenTiles.ElementAt(this._activeProblem.Goal.ID).Fill = System.Windows.Media.Brushes.MediumSlateBlue;
                         this.TileCount_lbl.Content = string.Format("{0:0}", this._activeProblem.SearchSpace.Size);
-                        this.Obstactle_lbl.Content = string.Format("~{0:0}% / {0:0.00}%",
+                        this.Obstactle_lbl.Content = string.Format("~{0:0}/{0:0.00}",
                             this._activeProblem.IntendedFreeObstaclePercentage,
                             this._activeProblem.ActualFreeObstaclePercentage);
                     }
@@ -177,8 +170,6 @@ namespace AI_SearchAlgos
                     this.Paths.Children.Add(l);
                 }
 
-                //Highlight Start and End as Light Green and Red
-
                 this.Landscape.InvalidateVisual();
                 this.Paths.InvalidateVisual();
             }
@@ -209,7 +200,7 @@ namespace AI_SearchAlgos
                 Points = pc,
                 HorizontalAlignment = System.Windows.HorizontalAlignment.Left,
                 VerticalAlignment = System.Windows.VerticalAlignment.Top,
-                Fill = System.Windows.Media.Brushes.ForestGreen,
+                Fill = System.Windows.Media.Brushes.Silver,
                 Stroke = System.Windows.Media.Brushes.Black,
                 StrokeThickness = 2
             };

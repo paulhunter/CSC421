@@ -122,7 +122,7 @@
         <!-- Canvas -->
         <ScrollViewer Grid.Row="2" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto" >
             <Grid>
-                <Grid Name="Paths" Background="DarkGray" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" />
+                <Grid Name="Paths" Background="White" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" />
                 <Grid Name="Landscape" Panel.ZIndex="2" Background="Transparent" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>
             </Grid>
         </ScrollViewer>
