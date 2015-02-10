@@ -8,6 +8,10 @@ using System.Diagnostics;
 namespace AI_SearchAlgos.Model
 {
     using Utils;
+    /// <summary>
+    /// The Map class is an abstraction of the tiles within a search space. 
+    /// 
+    /// </summary>
     public class Map
     {
         //Tiles of the map stored by the x,y Coordinates. 
@@ -185,7 +189,7 @@ namespace AI_SearchAlgos.Model
                 try
                 {
                     MapTile n = _tiles[xo, yo];
-                    Target.AddNeighbour(n, d);
+                    Target.AddNeighbour(n);
                     TrackEdge(Target, n);
                 }
                 //this will occur when we are dealing with an edge tile, its a nominal exception.
