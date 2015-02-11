@@ -3,12 +3,16 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Text.RegularExpressions;
+using System.Diagnostics;
 
 namespace prositional_logic_engine
 {
     public class ParseToken
     {
-        Dictionary<Operation, string> Keywords = new Dictionary<Operation, string>()
+        private static Regex r_symbol = new Regex("^[a-z_]+$");
+
+        public static Dictionary<Operation, string> Keywords = new Dictionary<Operation, string>()
             {
                 {Operation.NOT, "NOT" },
                 {Operation.AND, "AND" },
@@ -19,7 +23,7 @@ namespace prositional_logic_engine
                 {Operation.RIGHT_PARATHESIS, ")"}
             };
 
-        enum Type
+        public enum Type
         {
             OPERATION,
             SYMBOL
@@ -28,31 +32,55 @@ namespace prositional_logic_engine
         /// <summary>
         /// Operations are enumerated by precedence
         /// </summary>
-        enum Operation : byte
+        public enum Operation : byte
         {
-            NOT = 5,
-            AND = 4,
-            OR = 3,
-            IF = 2,
-            IFF = 1,
-            LEFT_PARATHESIS = 0,
-            RIGHT_PARATHESIS = 0
+            NOT = 6,
+            AND = 5,
+            OR = 4,
+            IF = 3,
+            IFF = 2,
+            LEFT_PARATHESIS = 1,
+            RIGHT_PARATHESIS = 0, 
+        }
+
+        public static ParseToken Parse(string Input)
+        {
+            //Check if string is operator.
+            foreach(Operation key in Keywords.Keys)
+            {
+                if(Keywords[key].Equals(Input))
+                {
+                    return new ParseToken(key);
+                }
+            }
+
+            //if not an opeator, it must be a symbol. 
+            if(r_symbol.IsMatch(Input))
+            {
+                return new ParseToken(Input);
+            }
+
+            //If we reach this point and have no returned something, 
+            //then we are looking at a string which is not a valid token. 
+            throw new ArgumentException();
         }
 
         public ParseToken(string SymbolName)
         {
             this.type = Type.SYMBOL;
+            this.op = null;
             this.symbol = SymbolName;
         }
 
         public ParseToken(Operation Op)
         {
             this.type = Type.OPERATION;
-            this.symbol = Keywords[op];
+            this.op = Op;
+            this.symbol = Keywords[Op];
         }
 
         public Type type;
-        public Operation op;
+        public Operation? op;
         public string symbol;
 
     }

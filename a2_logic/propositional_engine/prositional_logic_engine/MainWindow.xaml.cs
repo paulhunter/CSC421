@@ -24,5 +24,20 @@ namespace prositional_logic_engine
         {
             InitializeComponent();
         }
+
+        private void tb_infix_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            string input = (sender as TextBox).Text;
+            string RPN;
+            Exception ex;
+            if(ParseEngine.TryParse(input, out RPN, out ex))
+            {
+                this.tb_rpn.Text = RPN;
+            }
+            else
+            {
+                this.tb_rpn.Text = ex.Message;
+            }
+        }
     }
 }
