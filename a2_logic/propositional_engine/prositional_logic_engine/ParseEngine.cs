@@ -16,9 +16,11 @@ namespace prositional_logic_engine
     public class ParseEngine
     {
 
-        public static bool TryParse(string Input, out ParseTree PTree, out string RPN, out Exception Error)
+        public static bool TryParse(string Input, out ParseTree PTree, out string RPN, out Exception Error, out int ErrorStart, out int ErrorTokenLength)
         {
+            ErrorStart = ErrorTokenLength = 0;
             List<ParseToken> set;
+            List<ParseToken> rSet;
             try
             {
                 set = Tokenize(Input);
@@ -32,16 +34,27 @@ namespace prositional_logic_engine
                 return false;
             }
 
-            set = Reduce(set, out Error);
-            if(set == null)
+            rSet = Reduce(set, out Error);
+            if(rSet == null)
             {
                 RPN = null;
                 PTree = null;
                 return false;
             }
 
-            RPN = StringifyTokens(set);
-            PTree = null;
+            ParseToken ErrorToken;
+            string ErrorMessage;
+            PTree = ParseTree.Parse(rSet, out ErrorToken, out ErrorMessage);
+            if(PTree == null)
+            {
+                Error = new Exception(ErrorMessage);
+                RPN = null;
+                PTree = null;
+                return false;
+            }
+
+            RPN = StringifyTokens(rSet);
+            Error = null;
             return true;
 
         }
@@ -151,6 +164,19 @@ namespace prositional_logic_engine
                 result += " " + pt.symbol;
             }
             return result.TrimStart(new char[] {' '});
+        }
+
+        private static bool FindToken(string Input, List<ParseToken> List, ParseToken Target, out int Start, out int Length)
+        {
+            int cur_ind = 0;
+            foreach(ParseToken pt in List)
+            {
+                cur_ind = Input.IndexOf(pt.symbol, cur_ind);
+                if (pt == Target) break;
+            }
+            Start = cur_ind;
+            Length = Target.symbol.Length;
+            return true;
         }
 
 

@@ -28,17 +28,32 @@ namespace prositional_logic_engine
         private void tb_infix_TextChanged(object sender, TextChangedEventArgs e)
         {
             string input = (sender as TextBox).Text;
-            string RPN;
-            Exception ex;
-            ParseTree pt;
-            if(ParseEngine.TryParse(input, out pt, out RPN, out ex))
+            if(!string.IsNullOrEmpty(input) && !string.IsNullOrWhiteSpace(input))
             {
-                this.tb_rpn.Text = RPN;
+                string RPN;
+                Exception ex;
+                ParseTree pt;
+                int ErrorPoint;
+                int ErrorTokenLen;
+                if (ParseEngine.TryParse(input, out pt, out RPN, out ex, out ErrorPoint, out ErrorTokenLen))
+                {
+                    this.tb_rpn.Text = RPN;
+                }
+                else
+                {
+                    this.tb_rpn.Text = ex.Message;
+                    if(ErrorTokenLen != 0)
+                    {
+                        tb_infix.SelectionStart = ErrorPoint;
+                        tb_infix.SelectionLength = ErrorTokenLen;
+                    }
+                }
             }
             else
             {
-                this.tb_rpn.Text = ex.Message;
+                this.tb_rpn.Text = "";
             }
+
         }
     }
 }
