@@ -16,7 +16,7 @@ namespace prositional_logic_engine
     public class ParseEngine
     {
 
-        public static bool TryParse(string Input, out string RPN, out Exception Error)
+        public static bool TryParse(string Input, out ParseTree PTree, out string RPN, out Exception Error)
         {
             List<ParseToken> set;
             try
@@ -28,6 +28,7 @@ namespace prositional_logic_engine
                 //If we fail to parse, notify of the fail point.
                 RPN = null;
                 Error = e;
+                PTree = null;
                 return false;
             }
 
@@ -35,10 +36,12 @@ namespace prositional_logic_engine
             if(set == null)
             {
                 RPN = null;
+                PTree = null;
                 return false;
             }
 
-            RPN = "PASSED";
+            RPN = StringifyTokens(set);
+            PTree = null;
             return true;
 
         }
@@ -80,22 +83,22 @@ namespace prositional_logic_engine
             ParseToken tok;
             foreach(ParseToken t in Input)
             {
-                if(t.type == ParseToken.Type.SYMBOL)
+                if(t.type == TokenType.SYMBOL)
                 {
                     result.Add(t);
                     continue;
                 }
-                else if(t.op == ParseToken.Operation.LEFT_PARATHESIS)
+                else if(t.op == Operation.LEFT_PARATHESIS)
                 {
                     working_stack.Push(t);
                 }
-                else if(t.op == ParseToken.Operation.RIGHT_PARATHESIS)
+                else if(t.op == Operation.RIGHT_PARATHESIS)
                 {
                     bool found_left = false;
                     while(working_stack.Count > 0)
                     {
                         tok = working_stack.Pop();
-                        if(tok.op != ParseToken.Operation.LEFT_PARATHESIS)
+                        if(tok.op != Operation.LEFT_PARATHESIS)
                         {
                             result.Add(tok);
                         }
@@ -124,8 +127,8 @@ namespace prositional_logic_engine
             while(working_stack.Count > 0)
             {
                 tok = working_stack.Pop();
-                if(tok.op == ParseToken.Operation.LEFT_PARATHESIS ||
-                    tok.op == ParseToken.Operation.RIGHT_PARATHESIS)
+                if(tok.op == Operation.LEFT_PARATHESIS ||
+                    tok.op == Operation.RIGHT_PARATHESIS)
                 {
                     Error = new Exception("Mismatched Parathesis");
                     return null;
@@ -140,7 +143,15 @@ namespace prositional_logic_engine
             return result;
         }
 
-
+        private static string StringifyTokens(List<ParseToken> Input)
+        {
+            string result = "";
+            foreach(ParseToken pt in Input)
+            {
+                result += " " + pt.symbol;
+            }
+            return result.TrimStart(new char[] {' '});
+        }
 
 
         

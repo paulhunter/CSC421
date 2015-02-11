@@ -30,7 +30,8 @@ namespace prositional_logic_engine
             string input = (sender as TextBox).Text;
             string RPN;
             Exception ex;
-            if(ParseEngine.TryParse(input, out RPN, out ex))
+            ParseTree pt;
+            if(ParseEngine.TryParse(input, out pt, out RPN, out ex))
             {
                 this.tb_rpn.Text = RPN;
             }

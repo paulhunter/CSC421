@@ -23,26 +23,6 @@ namespace prositional_logic_engine
                 {Operation.RIGHT_PARATHESIS, ")"}
             };
 
-        public enum Type
-        {
-            OPERATION,
-            SYMBOL
-        }
-
-        /// <summary>
-        /// Operations are enumerated by precedence
-        /// </summary>
-        public enum Operation : byte
-        {
-            NOT = 6,
-            AND = 5,
-            OR = 4,
-            IF = 3,
-            IFF = 2,
-            LEFT_PARATHESIS = 1,
-            RIGHT_PARATHESIS = 0, 
-        }
-
         public static ParseToken Parse(string Input)
         {
             //Check if string is operator.
@@ -67,19 +47,19 @@ namespace prositional_logic_engine
 
         public ParseToken(string SymbolName)
         {
-            this.type = Type.SYMBOL;
+            this.type = TokenType.SYMBOL;
             this.op = null;
             this.symbol = SymbolName;
         }
 
         public ParseToken(Operation Op)
         {
-            this.type = Type.OPERATION;
+            this.type = TokenType.OPERATION;
             this.op = Op;
             this.symbol = Keywords[Op];
         }
 
-        public Type type;
+        public TokenType type;
         public Operation? op;
         public string symbol;
 
