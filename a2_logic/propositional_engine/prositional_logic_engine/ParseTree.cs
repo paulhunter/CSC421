@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Diagnostics;
 
 namespace prositional_logic_engine
 {
@@ -10,15 +8,18 @@ namespace prositional_logic_engine
     {
 
         private ParseNode _root;
+        private Dictionary<string, TruthValue> _assignments;
 
-        private ParseTree(ParseNode root)
+        private ParseTree(ParseNode root, Dictionary<string, TruthValue> symbolTable)
         {
             this._root = root;
+            this._assignments = symbolTable;
         }
 
         
         public static ParseTree Parse(List<ParseToken> Input, out ParseToken Error, out string ErrorMessage)
         {
+            Dictionary<string, TruthValue> symbolTable = new Dictionary<string, TruthValue>();
             Stack<ParseNode> wSet = new Stack<ParseNode>();
             ParseNode c;
 
@@ -42,8 +43,18 @@ namespace prositional_logic_engine
                             c.Right = wSet.Pop();
                             c.Left = wSet.Pop();
                         }
+                        //and bus it on the stack (fall through)
                     }
-                    //if its an operand we just pop it onto the stack.
+                    else
+                    {
+                        //if its an operand we want to add it to our symbol table.
+                        try
+                        {
+                            symbolTable.Add(c.Token.symbol, TruthValue.Unknown);
+                        }
+                        catch (ArgumentException) { } //Thrown when the key is already present. 
+                    }
+                    
                     wSet.Push(c);
                 }
                 catch (InvalidOperationException)
@@ -77,7 +88,7 @@ namespace prositional_logic_engine
 
             Error = null;
             ErrorMessage = null;
-            return new ParseTree(wSet.Pop());
+            return new ParseTree(wSet.Pop(), symbolTable);
         }
         
 
@@ -122,6 +133,8 @@ namespace prositional_logic_engine
 
             public TruthValue Evaluate()
             {
+                //If an operator, recursively call the evaluate while applying the
+                //appropriate operator. 
                 if(this.IsOperator)
                 {
                     switch(this.Token.op)
@@ -136,10 +149,14 @@ namespace prositional_logic_engine
                             return Op.IF(Left.Evaluate(), Right.Evaluate());
                         case Operation.IFF:
                             return Op.IFF(Left.Evaluate(), Right.Evaluate());
+                        default:
+                            Debug.Assert(false, "Invalid Operator in Parse Tree!");
+                            return TruthValue.Unknown;
                     }
                 }
                 else
                 {
+                    //Base case, we are a leaf, return our value.
                     return this.Value.Value;
                 }
             }
