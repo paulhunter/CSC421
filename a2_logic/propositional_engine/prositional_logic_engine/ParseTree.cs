@@ -34,12 +34,13 @@ namespace prositional_logic_engine
                         //a single operand.
                         if (c.Operation == Operation.NOT)
                         {
-                            c.Children.Add(wSet.Pop());
+                            c.Left = wSet.Pop();
                         }
                         else
                         {
-                            c.Children.Add(wSet.Pop());
-                            c.Children.Add(wSet.Pop());
+                            //Right was placed on the stack last. 
+                            c.Right = wSet.Pop();
+                            c.Left = wSet.Pop();
                         }
                     }
                     //if its an operand we just pop it onto the stack.
@@ -85,7 +86,8 @@ namespace prositional_logic_engine
         {
             public TruthValue? Value;
             public ParseToken Token;
-            public List<ParseNode> Children;
+            public ParseNode Left;
+            public ParseNode Right;
 
             public ParseNode(ParseToken Token)
             {
@@ -98,7 +100,8 @@ namespace prositional_logic_engine
                     Value = null;
                 }
                 this.Token = Token;
-                Children = new List<ParseNode>();
+                Left = null;
+                Right = null;
             }
 
             public bool IsOperator
@@ -119,7 +122,26 @@ namespace prositional_logic_engine
 
             public TruthValue Evaluate()
             {
-                return TruthValue.Unknown;
+                if(this.IsOperator)
+                {
+                    switch(this.Token.op)
+                    {
+                        case Operation.OR:
+                            return Op.OR(Left.Evaluate(), Right.Evaluate());
+                        case Operation.AND:
+                            return Op.AND(Left.Evaluate(), Right.Evaluate());
+                        case Operation.NOT:
+                            return Op.NOT(Left.Evaluate());
+                        case Operation.IF:
+                            return Op.IF(Left.Evaluate(), Right.Evaluate());
+                        case Operation.IFF:
+                            return Op.IFF(Left.Evaluate(), Right.Evaluate());
+                    }
+                }
+                else
+                {
+                    return this.Value.Value;
+                }
             }
 
 
