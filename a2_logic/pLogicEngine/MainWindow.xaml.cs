@@ -75,7 +75,11 @@ namespace pLogicEngine
             }
             else
             {
-                this.tb_rpn.Text = "Enter in-fix notation above to get started.";
+                this.tb_infix.Dispatcher.BeginInvoke(new Action(() =>
+                {
+                    this.tb_rpn.Text = "Enter in-fix notation above to get started.";
+                }));
+                
             }
             UpdateVariableStack();
         }

@@ -148,6 +148,7 @@ namespace pLogicEngine
             {
                 result.Add(key);
             }
+            result.Sort();
             return result.ToArray();
         }
 

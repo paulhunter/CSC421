@@ -10,7 +10,7 @@ namespace pLogicEngine
 {
     public class ParseToken
     {
-        private static Regex r_symbol = new Regex("^[a-z_]+$");
+        private static Regex r_symbol = new Regex("^[a-z0-9_]+$");
 
         public static Dictionary<Operation, string> Keywords = new Dictionary<Operation, string>()
             {
