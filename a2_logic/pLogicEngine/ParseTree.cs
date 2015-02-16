@@ -4,6 +4,10 @@ using System.Diagnostics;
 
 namespace pLogicEngine
 {
+    /// <summary>
+    /// A implementation of a Binary Expression Tree. This class is interactive, 
+    /// allowing for the assignment of variables within its structure and evaluation. 
+    /// </summary>
     public class ParseTree
     {
 
@@ -16,14 +20,20 @@ namespace pLogicEngine
             this._symbolTable = symbolTable;
             
         }
-
-        
+    
+        /// <summary>
+        /// Attempt to parse an RPN sequence of Parse tokens. If successful return the reslting
+        /// tree, else return null and populate the Error and ErrorMessage parameters. 
+        /// </summary>
+        /// <param name="Input">RPN sequence of Tokens. </param>
+        /// <param name="Error">Container for Token of Error</param>
+        /// <param name="ErrorMessage">Error message regarding violating token. </param>
+        /// <returns>A binary expression tree if succesful, otherwise null. </returns>
         public static ParseTree Parse(List<ParseToken> Input, out ParseToken Error, out string ErrorMessage)
         {
             Dictionary<string, List<ParseNode>> symbolTable = new Dictionary<string, List<ParseNode>>();
-            Stack<ParseNode> wSet = new Stack<ParseNode>();
+            Stack<ParseNode> wSet = new Stack<ParseNode>(); //Stack for processing. 
             ParseNode c;
-
 
             foreach (ParseToken pt in Input)
             {
@@ -40,11 +50,12 @@ namespace pLogicEngine
                         }
                         else
                         {
-                            //Right was placed on the stack last. 
+                            //Right was placed on the stack last
+                            //This order does not matter except for IF operators
                             c.Right = wSet.Pop();
                             c.Left = wSet.Pop();
                         }
-                        //and bus it on the stack (fall through)
+                        //and push it on the stack (fall through)
                     }
                     else
                     {
@@ -56,7 +67,7 @@ namespace pLogicEngine
                         catch (ArgumentException) 
                         {
                             symbolTable[c.Token.symbol].Add(c);
-                        } //Thrown when the key is already present. 
+                        } //Thrown when the key is already present, so at it to the current list.
                     }
                     
                     wSet.Push(c);
@@ -73,6 +84,7 @@ namespace pLogicEngine
 
             if(wSet.Count == 0)
             {
+               //We lost out root?
                throw new Exception();
             }
 
@@ -96,11 +108,24 @@ namespace pLogicEngine
             return new ParseTree(wSet.Pop(), symbolTable);
         }
         
+        /// <summary>
+        /// Evaluate the tree using the currently assigned TruthValues of the nodes. 
+        /// By default all nodes have a value of Unknown, use AssignValue to 
+        /// change variable assignments using variable names in GetSymbols(). 
+        /// </summary>
+        /// <returns>A truth value of the tree</returns>
         public TruthValue Evaluate()
         {
             return _root.Evaluate();
         }
 
+        /// <summary>
+        /// Evaluate the tree using a provided assignment of values. 
+        /// </summary>
+        /// <param name="Assignment">A dictionary of values which must 
+        /// contain at least the symbols present in the tree, additional
+        /// sybols within the dicitonary will not be used. </param>
+        /// <returns>Truth value of expression using provided assignment.</returns>
         public TruthValue Evaluate(Dictionary<string, TruthValue> Assignment)
         {
             TruthValue result = TruthValue.Unknown;
@@ -132,6 +157,11 @@ namespace pLogicEngine
             return result;
         }
 
+        /// <summary>
+        /// Assign a value to a variable within the expression. 
+        /// </summary>
+        /// <param name="Symbol">Variable name. </param>
+        /// <param name="Value">Desired truth value.</param>
         public void AssignValue(string Symbol, TruthValue Value)
         {
             Debug.Assert(_symbolTable.ContainsKey(Symbol), "Cannot assign value to non-symbol!");
@@ -141,6 +171,10 @@ namespace pLogicEngine
             }
         }
 
+        /// <summary>
+        /// Get a list of the variable names within the expression. 
+        /// </summary>
+        /// <returns></returns>
         public string[] GetSymbols()
         {
             List<string> result = new List<string>();
@@ -152,8 +186,10 @@ namespace pLogicEngine
             return result.ToArray();
         }
 
-
-
+        /// <summary>
+        /// An internal class used by the parse tree to store the expression. 
+        /// It is a standard binary tree node that contains a ParseToken structure. 
+        /// </summary>
         class ParseNode
         {
             public TruthValue? Value;
@@ -176,6 +212,9 @@ namespace pLogicEngine
                 Right = null;
             }
 
+            /// <summary>
+            /// Return true if the Node is an operator. 
+            /// </summary>
             public bool IsOperator
             {
                 get
@@ -184,6 +223,11 @@ namespace pLogicEngine
                 }
             }
 
+            /// <summary>
+            /// Returns the Operation of the node. Will 
+            /// throw a NullReferenceException if node is not an 
+            /// opertor, use IsOperator to check. 
+            /// </summary>
             public Operation Operation
             {
                 get
@@ -192,6 +236,11 @@ namespace pLogicEngine
                 }
             }
 
+            /// <summary>
+            /// Recursive evaluation method. 
+            /// </summary>
+            /// <returns>Thruth value of this node or its expression if
+            /// it is an operator.</returns>
             public TruthValue Evaluate()
             {
                 //If an operator, recursively call the evaluate while applying the

@@ -10,24 +10,46 @@ namespace pLogicEngine
     /// This parse engine of in-fix notation for propositional logic produces
     /// a resulting parse tree or appropriate exception. 
     /// 
-    /// The Syntax for Propositional logic
-    /// 
+    /// Syntax - all atoms are space delimited (1+ spaces)
+    /// expression ::= para_expression | op_expression | variable
+    /// para_expression ::= ‘(‘ expression ‘)’
+    /// op_expression ::= expression operator expression
+    /// operator ::= ‘OR’ | ‘AND’ | ‘NOT’ | ‘->’ | ‘<->’ 
+    /// variable ::= [‘a’-‘z’’0’-‘9’]+ 
     /// </summary>
     public class ParseEngine
     {
-
-        public static bool TryParse(string Input, out ParseTree PTree, out string RPN, out Exception Error, out int ErrorStart, out int ErrorTokenLength)
+        /// <summary>
+        /// Given an input of space delimited words, attempt to 
+        /// parse the infix notation into a parse tree. If the attempt is 
+        /// successful the PTree parameter will be populated, otherwise it
+        /// will be null. 
+        /// If a failure does occur, use the Message of Error and ErrorStart
+        /// and ErrorToken length to find the problem in the input. 
+        /// </summary>
+        /// <param name="Input">Infix Notation</param>
+        /// <param name="PTree">Resulting Parse Tree, if successful</param>
+        /// <param name="RPN">The RPN of the expression, if successful</param>
+        /// <param name="Error">A Parse Error</param>
+        /// <param name="ErrorStart">The index of the start of the error.</param>
+        /// <param name="ErrorTokenLength">The length of the token causing failure.</param>
+        /// <returns>True if the parse was successful, in which case PTree and 
+        /// RPN will not be null, otherwise, if the prase failed, Error, ErrorStart
+        /// and ErrorTokenLength will be populated.</returns>
+        public static bool TryParse(string Input, out ParseTree PTree, 
+            out string RPN, out Exception Error, out int ErrorStart, out int ErrorTokenLength)
         {
             ErrorStart = ErrorTokenLength = 0;
-            List<ParseToken> set;
-            List<ParseToken> rSet;
+            List<ParseToken> set; //Our infix notation token sequence
+            List<ParseToken> rSet; //out RPN notation token sequence
             try
             {
                 set = Tokenize(Input);
             }
             catch (FormatException e)
             {
-                //If we fail to parse, notify of the fail point.
+                //One of the tokens did not match an operator
+                //or fall into the Variables language. 
                 RPN = null;
                 Error = e;
                 PTree = null;
@@ -37,6 +59,7 @@ namespace pLogicEngine
             rSet = Reduce(set, out Error);
             if(rSet == null)
             {
+                //Mismatched Paratheses.
                 RPN = null;
                 PTree = null;
                 return false;
@@ -47,6 +70,7 @@ namespace pLogicEngine
             PTree = ParseTree.Parse(rSet, out ErrorToken, out ErrorMessage);
             if(PTree == null)
             {
+                //Operator/Operand mismatch error. 
                 Error = new Exception(ErrorMessage);
                 RPN = null;
                 PTree = null;
@@ -60,9 +84,10 @@ namespace pLogicEngine
         }
 
         /// <summary>
-        /// Break down a string and return the list of parse tokens. 
+        /// Break down a string of space delmited input into parse tokens. If a token
+        /// does not follow syntax, a FormatException will be thrown. 
         /// </summary>
-        /// <param name="input"></param>
+        /// <param name="input">Space delimited input</param>
         /// <returns></returns>
         private static List<ParseToken> Tokenize(string input)
         {
@@ -85,12 +110,13 @@ namespace pLogicEngine
         /// <summary>
         /// Apply the shunting yard algorith to the infix notation
         /// to reduce the notation to Reverse Polish Notation. This will
-        /// allow us to check that the parathesis and such are matched. 
+        /// allow us to check that the parathesis are matched. 
         /// </summary>
-        /// <param name="Input"></param>
-        /// <returns></returns>
+        /// <param name="Input">Infix notation sequence of tokens. </param>
+        /// <returns>RPN notation sequence of tokens with paratheses removed.</returns>
         private static List<ParseToken> Reduce(List<ParseToken> Input, out Exception Error)
         {
+            //http://en.wikipedia.org/wiki/Shunting-yard_algorithm
             List<ParseToken> result = new List<ParseToken>();
             Stack<ParseToken> working_stack = new Stack<ParseToken>();
             ParseToken tok;
@@ -156,6 +182,11 @@ namespace pLogicEngine
             return result;
         }
 
+        /// <summary>
+        /// Given a list of tokens, produce a space delimited string. 
+        /// </summary>
+        /// <param name="Input">Tokens</param>
+        /// <returns>Spaced delimited string of Tokens.</returns>
         private static string StringifyTokens(List<ParseToken> Input)
         {
             string result = "";
@@ -166,7 +197,19 @@ namespace pLogicEngine
             return result.TrimStart(new char[] {' '});
         }
 
-        private static bool FindToken(string Input, List<ParseToken> List, ParseToken Target, out int Start, out int Length)
+        /// <summary>
+        /// Given the string of original input, a list of Parse Tokens, and the 
+        /// target offender, find the index the token begins and the length of the 
+        /// token. 
+        /// </summary>
+        /// <param name="Input">Original infix input. </param>
+        /// <param name="List">Sequence of infix tokens. </param>
+        /// <param name="Target">Token to find the start index and length of</param>
+        /// <param name="Start">0 based index in Input were Target begins.</param>
+        /// <param name="Length">Length of target in characters. </param>
+        /// <returns></returns>
+        private static bool FindToken(string Input, List<ParseToken> List, ParseToken Target, 
+            out int Start, out int Length)
         {
             int cur_ind = 0;
             foreach(ParseToken pt in List)

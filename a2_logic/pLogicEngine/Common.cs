@@ -6,13 +6,19 @@ using System.Threading.Tasks;
 
 namespace pLogicEngine
 {
+    /// <summary>
+    /// Three-value Logic Enumeration of Truth Values.
+    /// </summary>
     public enum TruthValue
     {
         True,
         False,
         Unknown
     }
-
+    
+    /// <summary>
+    /// Token Types within expression. 
+    /// </summary>
     public enum TokenType
     {
         OPERATION,
@@ -33,9 +39,11 @@ namespace pLogicEngine
         RIGHT_PARATHESIS = 0,
     }
 
+    /// <summary>
+    /// A helper class which contains logic Operation methods. 
+    /// </summary>
     public class Op
     {
-
         /// <summary>
         /// Propositional Logic Operator
         /// Inclusive Or

@@ -8,10 +8,21 @@ using System.Diagnostics;
 
 namespace pLogicEngine
 {
+    /// <summary>
+    /// A ParseToken is a string within an input which represents a valid operator
+    /// or variable. 
+    /// </summary>
     public class ParseToken
     {
+        //Members of the Parse Token.
+        public TokenType type; //Token type. 
+        public Operation? op; //The operation of the token, null if a Variable.
+        public string symbol; //The string version of the variable or operator. 
+
+        //Matching for variable names. 
         private static Regex r_symbol = new Regex("^[a-z0-9_]+$");
 
+        //Keywords used for Operators. 
         public static Dictionary<Operation, string> Keywords = new Dictionary<Operation, string>()
             {
                 {Operation.NOT, "NOT" },
@@ -23,6 +34,12 @@ namespace pLogicEngine
                 {Operation.RIGHT_PARATHESIS, ")"}
             };
 
+        /// <summary>
+        /// Attempt to parse a string into a Token. 
+        /// </summary>
+        /// <param name="Input">Variable or opeator string</param>
+        /// <returns>A ParseToken if the string was valid, otherwise
+        /// throws an ArgumentException. </returns>
         public static ParseToken Parse(string Input)
         {
             //Check if string is operator.
@@ -45,6 +62,10 @@ namespace pLogicEngine
             throw new ArgumentException();
         }
 
+        /// <summary>
+        /// Constructure of Variable ParseTokens. 
+        /// </summary>
+        /// <param name="SymbolName"></param>
         public ParseToken(string SymbolName)
         {
             this.type = TokenType.SYMBOL;
@@ -52,16 +73,16 @@ namespace pLogicEngine
             this.symbol = SymbolName;
         }
 
+        /// <summary>
+        /// Constructor for Operator ParseTokens. 
+        /// </summary>
+        /// <param name="Op"></param>
         public ParseToken(Operation Op)
         {
             this.type = TokenType.OPERATION;
             this.op = Op;
             this.symbol = Keywords[Op];
         }
-
-        public TokenType type;
-        public Operation? op;
-        public string symbol;
 
     }
 }

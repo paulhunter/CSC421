@@ -29,7 +29,7 @@ namespace pLogicEngineTests
         const string D = "( NOT ( p3 -> p6 ) )";  //A1 = True, A2 = False
         //http://www.wolframalpha.com/input/?i=%28+!+%28+C+implies+F+%29+%29
 
-        const string X = string.Format("( ( {0} AND ( {1} AND {2} ) ) " 
+        string X = string.Format("( ( {0} AND ( {1} AND {2} ) ) " 
             + "-> {3} )", A, B, C, D); // A1 = True, A2 = True (Left side clause is always false)
 
         Dictionary<string, TruthValue> A1 = new Dictionary<string, TruthValue>()
@@ -112,7 +112,6 @@ namespace pLogicEngineTests
             Assert.AreEqual(TruthValue.True, GeneratePT(X).Evaluate(A2));
         }
 
-        [TestMethod]
         private ParseTree GeneratePT(string Input)
         {
             ParseTree r;

@@ -2,7 +2,6 @@
 using System;
 using pLogicEngine;
 
-
 namespace pLogicEngineTests
 {
     [TestClass]
@@ -11,6 +10,7 @@ namespace pLogicEngineTests
         [TestMethod]
         public void Test_OR_AllCases()
         {
+            //Test all nine combos of inputs. 
             Assert.AreEqual(TruthValue.Unknown, Op.OR(TruthValue.Unknown, TruthValue.Unknown), "OR(U,U) != U");
             Assert.AreEqual(TruthValue.True, Op.OR(TruthValue.Unknown, TruthValue.True), "OR(U,T) != T");
             Assert.AreEqual(TruthValue.Unknown, Op.OR(TruthValue.Unknown, TruthValue.False), "OR(U,F) != U");
@@ -25,6 +25,7 @@ namespace pLogicEngineTests
         [TestMethod]
         public void AND_Tests()
         {
+            //Test all nine combos of inputs.
             Assert.AreEqual(TruthValue.Unknown, Op.AND(TruthValue.Unknown, TruthValue.Unknown), "AND(U,U) != U");
             Assert.AreEqual(TruthValue.Unknown, Op.AND(TruthValue.Unknown, TruthValue.True), "AND(U,T) != U");
             Assert.AreEqual(TruthValue.False, Op.AND(TruthValue.Unknown, TruthValue.False), "AND(U,F) != F");
@@ -39,6 +40,7 @@ namespace pLogicEngineTests
         [TestMethod]
         public void NOT_Tests()
         {
+            //Test all three inputs. 
             Assert.AreEqual(TruthValue.Unknown, Op.NOT(TruthValue.Unknown), "NOT(U) != U");
             Assert.AreEqual(TruthValue.False, Op.NOT(TruthValue.True), "NOT(T) != F");
             Assert.AreEqual(TruthValue.True, Op.NOT(TruthValue.False), "NOT(F) != T");
