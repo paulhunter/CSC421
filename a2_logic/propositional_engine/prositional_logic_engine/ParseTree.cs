@@ -8,18 +8,18 @@ namespace prositional_logic_engine
     {
 
         private ParseNode _root;
-        private Dictionary<string, TruthValue> _assignments;
+        private Dictionary<string, List<ParseNode>> _symbolTable;
 
-        private ParseTree(ParseNode root, Dictionary<string, TruthValue> symbolTable)
+        private ParseTree(ParseNode root, Dictionary<string, List<ParseNode>> symbolTable)
         {
             this._root = root;
-            this._assignments = symbolTable;
+            this._symbolTable = symbolTable;
         }
 
         
         public static ParseTree Parse(List<ParseToken> Input, out ParseToken Error, out string ErrorMessage)
         {
-            Dictionary<string, TruthValue> symbolTable = new Dictionary<string, TruthValue>();
+            Dictionary<string, List<ParseNode>> symbolTable = new Dictionary<string, List<ParseNode>>();
             Stack<ParseNode> wSet = new Stack<ParseNode>();
             ParseNode c;
 
@@ -50,9 +50,12 @@ namespace prositional_logic_engine
                         //if its an operand we want to add it to our symbol table.
                         try
                         {
-                            symbolTable.Add(c.Token.symbol, TruthValue.Unknown);
+                            symbolTable.Add(c.Token.symbol, new List<ParseNode>() { c } );
                         }
-                        catch (ArgumentException) { } //Thrown when the key is already present. 
+                        catch (ArgumentException) 
+                        {
+                            symbolTable[c.Token.symbol].Add(c);
+                        } //Thrown when the key is already present. 
                     }
                     
                     wSet.Push(c);
@@ -91,6 +94,30 @@ namespace prositional_logic_engine
             return new ParseTree(wSet.Pop(), symbolTable);
         }
         
+        public TruthValue Evaluate()
+        {
+            return _root.Evaluate();
+        }
+
+        public void AssignValue(string Symbol, TruthValue Value)
+        {
+            Debug.Assert(_symbolTable.ContainsKey(Symbol), "Cannot assign value to non-symbol!");
+            foreach(ParseNode n in _symbolTable[Symbol])
+            {
+                n.Value = Value;
+            }
+        }
+
+        public string[] GetSymbols()
+        {
+            List<string> result = new List<string>();
+            foreach(string key in _symbolTable.Keys)
+            {
+                result.Add(key);
+            }
+            return result.ToArray();
+        }
+
 
 
         class ParseNode
@@ -135,9 +162,9 @@ namespace prositional_logic_engine
             {
                 //If an operator, recursively call the evaluate while applying the
                 //appropriate operator. 
-                if(this.IsOperator)
+                if (this.IsOperator)
                 {
-                    switch(this.Token.op)
+                    switch (this.Token.op)
                     {
                         case Operation.OR:
                             return Op.OR(Left.Evaluate(), Right.Evaluate());
@@ -159,6 +186,7 @@ namespace prositional_logic_engine
                     //Base case, we are a leaf, return our value.
                     return this.Value.Value;
                 }
+                
             }
 
 
