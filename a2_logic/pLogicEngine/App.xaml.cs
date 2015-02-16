@@ -13,5 +13,6 @@ namespace pLogicEngine
     /// </summary>
     public partial class App : Application
     {
+        //Entry point is Constructor for MainWindow.
     }
 }

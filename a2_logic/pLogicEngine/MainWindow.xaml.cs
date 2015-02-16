@@ -17,13 +17,14 @@ using System.Threading;
 namespace pLogicEngine
 {
     /// <summary>
-    /// Interaction logic for MainWindow.xaml
+    /// Interaction logic for MainWindow.xaml, interacts with the ParseEngine and
+    /// ParseTree classes to allow a user to experiement with Propositional Logic.
     /// </summary>
     public partial class MainWindow : Window
     {
 
-        ParseTree _activeExpression;
-        Timer _parseTimer;
+        ParseTree _activeExpression; //The current expression entered by the user. 
+        Timer _parseTimer; //A timer used to parse the input after the user has stopped typing. 
 
         volatile string _input;
 
@@ -36,10 +37,12 @@ namespace pLogicEngine
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
-            AttemptParse();
-            
+            AttemptParse(); //Called to step initial UI element values. 
         }
 
+        /// <summary>
+        /// Attempt to parse the current user input into a parse tree.
+        /// </summary>
         private void AttemptParse()
         {
             string input = _input.Substring(0); 
@@ -51,6 +54,7 @@ namespace pLogicEngine
                 int ErrorTokenLen;
                 if (ParseEngine.TryParse(input, out this._activeExpression, out RPN, out ex, out ErrorPoint, out ErrorTokenLen))
                 {
+                    //Parse Sucess. 
                     this.tb_infix.Dispatcher.BeginInvoke(new Action(() =>
                     {
 #if DEBUG
@@ -62,6 +66,7 @@ namespace pLogicEngine
                 }
                 else
                 {
+                    //Parse Failure.
                     this.tb_infix.Dispatcher.BeginInvoke(new Action(() =>
                     {
                         this.tb_rpn.Text = ex.Message;
@@ -75,15 +80,20 @@ namespace pLogicEngine
             }
             else
             {
+                //Text box is empty. 
                 this.tb_infix.Dispatcher.BeginInvoke(new Action(() =>
                 {
                     this.tb_rpn.Text = "Enter in-fix notation above to get started.";
                 }));
                 
             }
+            //Update other UI elements. 
             UpdateVariableStack();
         }
 
+        /// <summary>
+        /// Update the UI to show the variables present in the current expression. 
+        /// </summary>
         private void UpdateVariableStack()
         {
             this.sp_variables.Dispatcher.BeginInvoke(new Action(() =>
@@ -99,16 +109,30 @@ namespace pLogicEngine
             }));
         }
 
+        /// <summary>
+        /// Fired when the user has stopped manipulating the infix textbox. 
+        /// </summary>
+        /// <param name="state">null</param>
         private void ParseTimerCallback(object state)
         {
             AttemptParse();
         }
 
+        #region Input Changed -> Timer Reset 
+
         private void tb_infix_TextChanged(object sender, TextChangedEventArgs e)
         {
+            
             _input = tb_infix.Text;
             _parseTimer.Change(3500, Timeout.Infinite);
         }
+
+        private void tb_infix_SelectionChanged(object sender, RoutedEventArgs e)
+        {
+            _parseTimer.Change(3500, Timeout.Infinite);
+        }
+
+        #endregion
 
         private void evaluate_click(object sender, RoutedEventArgs e)
         {
@@ -129,12 +153,9 @@ namespace pLogicEngine
 
                 }
             }
-            try
-            {
-                
-            }
-            catch { }
         }
+
+
 
 
     }

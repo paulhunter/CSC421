@@ -107,7 +107,7 @@ namespace pLogicEngine
             ErrorMessage = null;
             return new ParseTree(wSet.Pop(), symbolTable);
         }
-        
+       
         /// <summary>
         /// Evaluate the tree using the currently assigned TruthValues of the nodes. 
         /// By default all nodes have a value of Unknown, use AssignValue to 

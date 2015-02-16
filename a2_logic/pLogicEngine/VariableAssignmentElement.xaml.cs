@@ -17,6 +17,8 @@ namespace pLogicEngine
 {
     /// <summary>
     /// Interaction logic for VariableAssignmentElement.xaml
+    /// this UI elemnt was created to allow a user to change the 
+    /// truth value assignment of a variable within an expression. 
     /// </summary>
     public partial class VariableAssignmentElement : UserControl
     {
@@ -36,12 +38,14 @@ namespace pLogicEngine
 
         private void UserControl_Loaded(object sender, RoutedEventArgs e)
         {
+            //Default to the Unknow value (what the ParseTree defaults to)
             this.cmb_value.ItemsSource = Enum.GetValues(typeof(TruthValue));
             this.cmb_value.SelectedIndex = 2; //Set to unknown, their default value.
         }
 
         private void cmb_value_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
+            //Assign the value in the tree. 
             _source.AssignValue(_symbol, (TruthValue)this.cmb_value.SelectedValue);
         }
 
