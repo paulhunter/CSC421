@@ -14,6 +14,7 @@ namespace pLogicEngine
         {
             this._root = root;
             this._symbolTable = symbolTable;
+            
         }
 
         
@@ -85,7 +86,8 @@ namespace pLogicEngine
                     wSet.Pop();
                 }
                 Error = wSet.Peek().Token;
-                ErrorMessage = string.Format("Unused operands starting w/ {0}.", wSet.Peek().Token.symbol);
+                ErrorMessage = string.Format(
+                    "Unused operands starting w/ {0}.", wSet.Peek().Token.symbol);
                 return null;
             }
 
@@ -97,6 +99,37 @@ namespace pLogicEngine
         public TruthValue Evaluate()
         {
             return _root.Evaluate();
+        }
+
+        public TruthValue Evaluate(Dictionary<string, TruthValue> Assignment)
+        {
+            TruthValue result = TruthValue.Unknown;
+            Dictionary<string, TruthValue> Old = new Dictionary<string, TruthValue>();
+            string s = "";
+            try
+            {
+                foreach (string sym in _symbolTable.Keys)
+                {
+                    s = sym;
+                    Old.Add(sym, _symbolTable[sym][0].Value.Value);
+                    //We can make this assumption because no empty list is every
+                    //added to the dictionary. 
+                    AssignValue(sym, Assignment[sym]);
+                }
+            }
+            catch (KeyNotFoundException)
+            {
+                throw new ArgumentException("Assignment did not contain a definition for {0}.", s);
+            }
+
+            result = Evaluate();
+
+            foreach (string sym in _symbolTable.Keys)
+            {
+                AssignValue(sym, Old[sym]);
+            }
+
+            return result;
         }
 
         public void AssignValue(string Symbol, TruthValue Value)
