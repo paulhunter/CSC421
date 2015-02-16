@@ -13,7 +13,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace prositional_logic_engine
+namespace pLogicEngine
 {
     /// <summary>
     /// Interaction logic for VariableAssignmentElement.xaml

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 
-namespace prositional_logic_engine
+namespace pLogicEngine
 {
     public class ParseTree
     {

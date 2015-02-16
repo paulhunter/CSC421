@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace prositional_logic_engine
+namespace pLogicEngine
 {
     public enum TruthValue
     {

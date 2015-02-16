@@ -14,7 +14,7 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Threading;
 
-namespace prositional_logic_engine
+namespace pLogicEngine
 {
     /// <summary>
     /// Interaction logic for MainWindow.xaml

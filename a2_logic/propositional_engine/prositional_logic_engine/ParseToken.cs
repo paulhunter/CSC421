@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using System.Text.RegularExpressions;
 using System.Diagnostics;
 
-namespace prositional_logic_engine
+namespace pLogicEngine
 {
     public class ParseToken
     {

@@ -7,7 +7,7 @@
     <ProjectGuid>{41F6B34C-4094-4142-99E3-5DB097A697E0}</ProjectGuid>
     <OutputType>WinExe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>prositional_logic_engine</RootNamespace>
+    <RootNamespace>pLogicEngine</RootNamespace>
     <AssemblyName>prositional_logic_engine</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
