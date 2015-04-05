@@ -18,38 +18,38 @@ namespace AI_SearchAlgos.Search
         public MapTile Goal;
         public Map SearchSpace;
         private int obstacles;
-        private double _intentededFreeObstacles;
-        private double _actualFreeObstacles;
+        private double _intentededObstacles;
+        private double _actualObstacles;
         private uint _iWidth;
         private uint _iHeight;
 
-        public HexagonalTileSearchProblem(uint Width, uint Height, double FreePathPercentage)
+        public HexagonalTileSearchProblem(uint Width, uint Height, double ObstaclePercentage)
         {
-            Log.Info(string.Format("SearchProblem: Creating new Instance of  [w:{0}, h:{1}, p:{2:0.000}]", Width, Height, FreePathPercentage));
-            _intentededFreeObstacles = FreePathPercentage;
+            Log.Info(string.Format("SearchProblem: Creating new Instance of  [w:{0}, h:{1}, p:{2:0.000}]", Width, Height, ObstaclePercentage));
+            _intentededObstacles = ObstaclePercentage;
             _iWidth = Width;
             _iHeight = Height;
         }
 
         public HexagonalTileSearchProblem Clone()
         {
-            return new HexagonalTileSearchProblem(_iWidth, _iHeight, this._intentededFreeObstacles);
+            return new HexagonalTileSearchProblem(_iWidth, _iHeight, this._intentededObstacles);
         }
 
-        public double IntendedFreeObstaclePercentage
+        public double IntendedObstaclePercentage
         {
             get
             {
-                return _intentededFreeObstacles * 100;
+                return _intentededObstacles * 100;
             }
           
         }
 
-        public double ActualFreeObstaclePercentage
+        public double ActualObstaclePercentage
         {
             get
             {
-                return _actualFreeObstacles * 100;
+                return _actualObstacles * 100;
             }
            
         }
@@ -73,8 +73,8 @@ namespace AI_SearchAlgos.Search
 
         private void CreateObstacles()
         {   
-            obstacles = (int)SearchSpace.EdgeCount - (int)Math.Floor(_intentededFreeObstacles*SearchSpace.EdgeCount);
-            _actualFreeObstacles = ( obstacles / (SearchSpace.EdgeCount * 1.0));
+            obstacles = (int)Math.Floor(_intentededObstacles*SearchSpace.EdgeCount);
+            _actualObstacles = ( obstacles / (SearchSpace.EdgeCount * 1.0));
             for (int a = 0; a < obstacles; a++)
             {
                 SearchSpace.RemoveRandomEdge();
@@ -94,7 +94,7 @@ namespace AI_SearchAlgos.Search
 
         public override string ToString()
         {
-            return string.Format("{0},{1}", SearchSpace.Size, _intentededFreeObstacles);
+            return string.Format("{0},{1}", SearchSpace.Size, _intentededObstacles);
         }
 
     }

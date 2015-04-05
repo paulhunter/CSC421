@@ -1,7 +1,7 @@
 ﻿<Window x:Class="AI_SearchAlgos.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="CSC 421 - Search Algorithms" MinWidth="600" Width="935">
+        Title="CSC 421 - Search Algorithms" MinWidth="600" Width="985">
     <Grid Background="Gainsboro">
         <Grid.RowDefinitions>
             <RowDefinition Height="90" />
@@ -28,11 +28,11 @@
                         <TextBox Name="MapHeight_tb" Width="30" KeyDown="Map_tb_KeyDown" MaxLength="2" Text="5" HorizontalContentAlignment="Center" LostFocus="textbox_LostFocus" VerticalContentAlignment="Center" Margin="3,3,3,3"/>
                     </StackPanel>
                     <StackPanel Grid.Row="0" Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Center">
-                        <Label Content="% Free:" Margin="3,3,3,3" VerticalContentAlignment="Center"/>
+                        <Label Content="% Obs:" Margin="3,3,3,3" VerticalContentAlignment="Center"/>
                         <TextBox Name="MapPercentFree_tb" Width="30" MaxLength="3" KeyDown="Map_tb_KeyDown" HorizontalContentAlignment="Center" LostFocus="textbox_LostFocus" Text="50" VerticalContentAlignment="Center" Margin="3,3,3,3"/>
                     </StackPanel>
                     <StackPanel Grid.Row="1" Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Center">
-                        <Button Content="Generate" Height="24" Click="Generate_Click"/>
+                        <Button Content="Generate" Height="24" Width="80" Click="Generate_Click"/>
                     </StackPanel>
                 </Grid>
             </GroupBox>
@@ -58,7 +58,7 @@
                         <Label Name="TileCount_lbl" FontWeight="Bold" Content="N/A" Margin="3,3,3,3" VerticalContentAlignment="Center"/>
                     </StackPanel>
                     <StackPanel Grid.Row="1" Grid.Column="0" Orientation="Horizontal" HorizontalAlignment="Left" >
-                        <Label Content="% Free Obstacles:" Margin="3,3,3,3" VerticalContentAlignment="Center"/>
+                        <Label Content="% Obstacles:" Margin="3,3,3,3" VerticalContentAlignment="Center"/>
                         <Label Name="Obstactle_lbl" FontWeight="Bold" Content="N/A" Margin="3,3,3,3" VerticalContentAlignment="Center"/>
                     </StackPanel>
                 </Grid>

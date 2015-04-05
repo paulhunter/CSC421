@@ -145,8 +145,8 @@ namespace AI_SearchAlgos
                         this.OnScreenTiles.ElementAt(this._activeProblem.Goal.ID).Fill = System.Windows.Media.Brushes.MediumSlateBlue;
                         this.TileCount_lbl.Content = string.Format("{0:0}", this._activeProblem.SearchSpace.Size);
                         this.Obstactle_lbl.Content = string.Format("~{0:0}/{0:0.00}",
-                            this._activeProblem.IntendedFreeObstaclePercentage,
-                            this._activeProblem.ActualFreeObstaclePercentage);
+                            this._activeProblem.IntendedObstaclePercentage,
+                            this._activeProblem.ActualObstaclePercentage);
                     }
                     
                 }));
