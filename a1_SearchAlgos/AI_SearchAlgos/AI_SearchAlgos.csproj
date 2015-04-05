@@ -69,7 +69,7 @@
     <Compile Include="Search\BreadthFirstSearch.cs" />
     <Compile Include="Search\DepthFirstSearch.cs" />
     <Compile Include="Search\Heuristics\EuclidianDistance.cs" />
-    <Compile Include="Search\Heuristics\Heuristic.cs" />
+    <Compile Include="Search\Heuristics\IHeuristic.cs" />
     <Compile Include="Search\Heuristics\TileDistanceHeuristic.cs" />
     <Compile Include="Search\HillClimbSearch.cs" />
     <Compile Include="Search\ISearchAlgorithm.cs" />

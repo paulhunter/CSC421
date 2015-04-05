@@ -37,6 +37,7 @@ namespace AI_SearchAlgos
         private uint map_PercentFree = 50;
 
         private HexagonalTileSearchProblem _activeProblem;
+        private bool _generationDirty = true;
         private SearchResults _activeResults;
         private String _activeResultsMethod;
         private Map _activeMap;
@@ -78,7 +79,11 @@ namespace AI_SearchAlgos
 
         private void Generate_Click(object sender, RoutedEventArgs e)
         {
-            _activeProblem = new HexagonalTileSearchProblem(map_Width, map_Height, map_PercentFree/(100.0));
+            if(_generationDirty)
+            {
+                _activeProblem = new HexagonalTileSearchProblem(map_Width, map_Height, map_PercentFree / (100.0));
+                _generationDirty = false;
+            }
             _activeProblem.Reset();
             Log.Info(string.Format("App: Map created has {0:0.00} free paths of target {1:0.00}", _activeProblem.SearchSpace.FreePathPercentage * 100, 0.2 * 100));
             ClearMap();
@@ -274,6 +279,7 @@ namespace AI_SearchAlgos
                 if(new_w > 20)
                     new_w = 20;
                 map_Width = new_w;
+                _generationDirty = true;
             }
             this.MapWidth_tb.Text = string.Format("{0:0}", map_Width);
         }
@@ -286,6 +292,7 @@ namespace AI_SearchAlgos
                 if(new_h > 20)
                     new_h = 20;
                 map_Height = new_h;
+                _generationDirty = true;
             }
             this.MapHeight_tb.Text = string.Format("{0:0}", map_Height);
         }
@@ -298,6 +305,7 @@ namespace AI_SearchAlgos
                 if(new_p > 100)
                     new_p = 100;
                 map_PercentFree = new_p;
+                _generationDirty = _generationDirty;
             }
             this.MapPercentFree_tb.Text = string.Format("{0:0}", map_PercentFree);
         }
