@@ -20,6 +20,21 @@ namespace AI_SearchAlgos.Search
 
         public void Add(K Key, T Value)
         {
+            Tuple<K,T> old;
+            if ((old = Contains(Value)) != null)
+            {
+                if (old.Item1.CompareTo(Key) < 0)
+                {
+                    _list.Remove(old);
+                }
+                else
+                {
+                    return;
+                }
+            }
+
+            //Either the element is not in the list, or we have removed the old copy with a greater
+            //key value.
             if(_list.Count == 0)
             {
                 _list.Add(new Tuple<K, T>(Key, Value));
@@ -102,6 +117,16 @@ namespace AI_SearchAlgos.Search
         public void Clear()
         {
             _list.Clear();
+        }
+
+        public Tuple<K,T> Contains(T target)
+        {
+            if (_list.Exists(x => x.Item2 == target))
+            {
+                return _list.Find(x => x.Item2 == target);
+            }
+            else
+                return null;
         }
 
 

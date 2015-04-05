@@ -20,7 +20,7 @@ namespace AI_SearchAlgos.Search.Heuristics
             double r = Math.Sqrt(
                     Math.Pow((A.X - B.X), 2) + 
                     Math.Pow((A.Y - B.Y), 2)) - 0.5;
-            return r;
+            return Math.Max(0, r);
         }
 
         public override string ToString()

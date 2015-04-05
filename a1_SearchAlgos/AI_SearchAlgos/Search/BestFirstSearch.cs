@@ -47,20 +47,20 @@ namespace AI_SearchAlgos.Search
              * costs are compared and the cheaper used. */
             MapTile current = null;
             DateTime start_time = DateTime.Now;
-            while(Available.Count != 0)
+            while (Available.Count != 0)
             {
-                if(Available.Count > r.SpaceComplexity)
+                if (Available.Count > r.SpaceComplexity)
                 {
                     r.SpaceComplexity = Available.Count;
                 }
 
-                current = Available.Pop();   
-                r.TimeComplexity++; 
+                current = Available.Pop();
+                r.TimeComplexity++;
 
                 Explored[current] = true;
-                
+
                 //If we have recieved the destination, we have completed the search.
-                if(current == Problem.Goal)
+                if (current == Problem.Goal)
                 {
                     r.Solved = true;
                     break;
@@ -68,11 +68,11 @@ namespace AI_SearchAlgos.Search
 
                 //If we have not found the destination, catalog the available operations
                 //from this mapTile.
-                foreach(MapTile mt in current.GetNeighbours())
+                foreach (MapTile mt in current.GetNeighbours())
                 {
                     if (Explored[mt] == false)
                     {
-                        if(!Paths.ContainsKey(mt))
+                        if (!Paths.ContainsKey(mt))
                         {
                             Paths[mt] = current;
                             Available.Add(
@@ -85,10 +85,9 @@ namespace AI_SearchAlgos.Search
                             MapTile oldParent = Paths[mt];
                             Paths[mt] = current;
                             int new_cost = SearchHelper.GetPathLengthFromStart(mt, Paths, Problem.Start);
-                            
                             //If the new cost to the tile is more than our previous
-                            //path to this tile, we want to keep our previous parent. 
-                            if(new_cost > old_cost)
+                            //path to this tile, we want to keep our previous parent.
+                            if (new_cost > old_cost)
                             {
                                 Paths[mt] = oldParent;
                             }
@@ -99,9 +98,10 @@ namespace AI_SearchAlgos.Search
                                 mt);
                             }
                         }
-                    }
+                    }               
                 }
             }
+             
             DateTime end_time = DateTime.Now;
             r.TimeInMilliseconds = (int)(end_time - start_time).TotalMilliseconds;
 
