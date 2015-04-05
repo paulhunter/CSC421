@@ -15,7 +15,7 @@ namespace AI_SearchAlgos.Search.Heuristics
         /// </summary>
         /// <param name="A">Start</param>
         /// <param name="B">Goal</param>
-        /// <returns></returns>
+        /// <returns>An admissible heuristic value.</returns>
         double Calculate(MapTile A, MapTile B);
     }
 }

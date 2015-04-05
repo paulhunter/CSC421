@@ -125,6 +125,11 @@ namespace AI_SearchAlgos.Model
             }
         }
 
+        /// <summary>
+        /// The number of edges present in the graph. Duplicates, 
+        /// that is those formed by pairs like X,Y Y,X are not present. 
+        /// The first 
+        /// </summary>
         public uint EdgeCount
         {
             get
@@ -198,6 +203,13 @@ namespace AI_SearchAlgos.Model
             }
         }
 
+        /// <summary>
+        /// Add an edge to the record of edges. This method will ensure only edges between 
+        /// nodes are added once, with no duplicates formed by pairs like X,Y, and Y,X. 
+        /// If the edge is already it will not be added a second time. 
+        /// </summary>
+        /// <param name="A"></param>
+        /// <param name="B"></param>
         private void TrackEdge(MapTile A, MapTile B)
         {
             Tuple<MapTile, MapTile> t;
@@ -216,7 +228,9 @@ namespace AI_SearchAlgos.Model
             }
         }
 
-        //This method will arbitrarily remove an edge from the graph.
+        /// <summary>
+        /// This method will arbitrarily remove an edge from the graph.
+        /// </summary>
         public void RemoveRandomEdge()
         {
 

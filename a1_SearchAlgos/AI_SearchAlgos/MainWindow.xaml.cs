@@ -24,6 +24,7 @@ namespace AI_SearchAlgos
     /// </summary>
     public partial class MainWindow : Window
     {
+        /* Constants used for drawing polygons */
         private const int POLYGON_SIZE = 45;
         private const int POLYGON_SPACE = 10;
         private const double POLYGON_WIDTH = 1.732051 * (POLYGON_SIZE + POLYGON_SPACE); //SQRT(3) * (PolygonSize + 5);
@@ -56,9 +57,11 @@ namespace AI_SearchAlgos
 
         private void Init()
         {
+            /* GUI elements within the Visualization Area */
             OnScreenTiles = new List<Polygon>();
             OnScreenPaths = new List<Line>();
 
+            /* Add all algorithms and combinations to selector */
             Algorithms.Items.Add(new BreadthFirstSearch());
             Algorithms.Items.Add(new DepthFirstSearch());
             Algorithms.Items.Add(new IterativeDeepeningSearch());
@@ -71,14 +74,13 @@ namespace AI_SearchAlgos
             
             Algorithms.SelectedIndex = 0;
 
-
             RefeshUIComponents();
-
         }
-
 
         private void Generate_Click(object sender, RoutedEventArgs e)
         {
+            /* Generate a new instance. If the configuration is dirty, a new instantiate is needed, otherwise
+             * we can just reused to old allocation and reset the configuration */
             if(_generationDirty)
             {
                 _activeProblem = new HexagonalTileSearchProblem(map_Width, map_Height, map_PercentFree / (100.0));
@@ -95,6 +97,7 @@ namespace AI_SearchAlgos
 
         private void ClearMap()
         {
+            /* Clear all the visualization elements from the canvas */
             if(OnScreenTiles.Count > 0)
             {
                 this.Landscape.Children.Clear();
@@ -106,7 +109,10 @@ namespace AI_SearchAlgos
             }
             
         }
-
+        
+        /// <summary>
+        /// Update all UI elements based on the existence of needed data
+        /// </summary>
         private void RefeshUIComponents()
         {
             this._thisInstance.Dispatcher.BeginInvoke(new Action(() =>
@@ -146,6 +152,9 @@ namespace AI_SearchAlgos
                 }));
         }
 
+        /// <summary>
+        /// Redraw all GUI elements used to create the visualization of the map.
+        /// </summary>
         private void UpdateMap()
         {
             if(this._activeMap != null)
@@ -270,7 +279,9 @@ namespace AI_SearchAlgos
             RefeshUIComponents();
         }
 
-        
+        /// <summary>
+        /// A string validator for the value provided for width. 
+        /// </summary>
         private void ValidateMapWidth()
         {
             uint new_w;
@@ -284,6 +295,9 @@ namespace AI_SearchAlgos
             this.MapWidth_tb.Text = string.Format("{0:0}", map_Width);
         }
 
+        /// <summary>
+        /// A string validator for the value provided for width. 
+        /// </summary>
         private void ValidateMapHeight()
         {
             uint new_h;
@@ -305,7 +319,7 @@ namespace AI_SearchAlgos
                 if(new_p > 100)
                     new_p = 100;
                 map_PercentFree = new_p;
-                _generationDirty = _generationDirty;
+                _generationDirty = true;
             }
             this.MapPercentFree_tb.Text = string.Format("{0:0}", map_PercentFree);
         }
@@ -324,9 +338,7 @@ namespace AI_SearchAlgos
             {
                 ValidateMapPathPerc();
             }
-            
         }
-
 
         private void textbox_LostFocus(object sender, RoutedEventArgs e)
         {
