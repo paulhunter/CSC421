@@ -59,7 +59,7 @@ namespace AI_SearchAlgos.Search
                 current = best;
             } while (true);
             DateTime end_time = DateTime.Now;
-
+            r.TimeInMilliseconds = (int)(end_time - start_time).TotalMilliseconds;
             //Regardless of whether we found the goal, we want to path to the
             //local maxima we did find. 
             r.Path = SearchHelper.GetPathFromStart(current, Paths, Problem.Start);
