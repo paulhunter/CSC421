@@ -37,7 +37,6 @@ namespace AI_SearchAlgos.Search
                 {
                     r.SpaceComplexity = lastResult.SpaceComplexity;
                 }
-                
 
                 if(lastResult.Solved == true)
                 {

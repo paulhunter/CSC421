@@ -41,6 +41,13 @@ namespace AI_SearchAlgos.Search
             Available.Add(0, Problem.Start);
 
             /* ----- SEARCH ----- */
+            /* A Star works by evaluating potential paths based on an estimate of 
+             * there overall path cost to the goal. This is computed as the existing cost
+             * from the start to the node, based on the known cost to the current node, and the
+             * length of the edge , plus its estimated distance to the goal. If a node has been observed
+             * before, or is part of a path already established, the cost via the new route is compared with
+             * that of the old, and if cheaper, will be used in placed of the old. In this fashion, the algo is 
+             * always capable of finding the best route through a graph, but has a fair amount of overhead. */
             MapTile current = null;
             int current_cost;
             DateTime start_time = DateTime.Now;
@@ -65,7 +72,6 @@ namespace AI_SearchAlgos.Search
                     break;
                 }
 
-               
                 //If we have not found the destination, catalog the available operations
                 //from this mapTile.
                 foreach(MapTile mt in current.GetNeighbours())

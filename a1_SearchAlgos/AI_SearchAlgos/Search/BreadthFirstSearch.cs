@@ -41,6 +41,7 @@ namespace AI_SearchAlgos.Search
                 Explored.Add(mt, false);
             }
 
+            /* **** SEARCH ****** */
             MapTile current = null;
             uint currentDepth;
             DateTime start_time = DateTime.Now;

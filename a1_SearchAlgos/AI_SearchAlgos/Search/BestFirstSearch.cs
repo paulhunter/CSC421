@@ -40,6 +40,11 @@ namespace AI_SearchAlgos.Search
             hSortedList<double, MapTile> Available = new hSortedList<double, MapTile>();
             Available.Add(0, Problem.Start);
 
+            /* ***** SEARCH ************ */
+            /* In the best first search approach, each node is evaluated based
+             * on an estimation of its distance from the goal. In a fashion similar
+             * to the A* search, if a node has been view before, or is part of a path,
+             * costs are compared and the cheaper used. */
             MapTile current = null;
             DateTime start_time = DateTime.Now;
             while(Available.Count != 0)
@@ -93,17 +98,14 @@ namespace AI_SearchAlgos.Search
                                 Heuristic.Calculate(mt, Problem.Goal),
                                 mt);
                             }
-
                         }
                     }
-                    
-
-
                 }
             }
             DateTime end_time = DateTime.Now;
             r.TimeInMilliseconds = (int)(end_time - start_time).TotalMilliseconds;
 
+            /* Backtrack for find path */
             if(r.Solved)
             {
                 r.Path = SearchHelper.GetPathFromStart(current, Paths, Problem.Start);
