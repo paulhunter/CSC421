@@ -17,7 +17,7 @@ namespace AI_SearchAlgos.Search
 
     public class SearchManager
     {
-        static int THREADS = Environment.ProcessorCount;
+        static int THREADS = 1; //Math.Max(Environment.ProcessorCount-1, 1);
 
         static ISearchAlgorithm[] Algos = new ISearchAlgorithm[]
         {

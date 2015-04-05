@@ -29,7 +29,7 @@ namespace AI_SearchAlgos.Search
 
         public override string ToString()
         {
-            return string.Format("{0},{1},{2},{3}", SpaceComplexity, TimeComplexity, TimeInMilliseconds, Path.Count);
+            return string.Format("{0},{1},{2}", SpaceComplexity, TimeComplexity, TimeInMilliseconds);
         }
 
     }
